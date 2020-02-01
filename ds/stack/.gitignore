@@ -1,4 +1,4 @@
 *.class
 *.out
 *.pyc
-.ipnyb_checkpoints/*
+.ipnyb_checkpoints/
