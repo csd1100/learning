@@ -1,3 +1,4 @@
 *.class
 *.out
 *.pyc
+.ipynb_checkpoints/
