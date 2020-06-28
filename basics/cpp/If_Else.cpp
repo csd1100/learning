@@ -3,27 +3,27 @@
 int main()
 {
 
-    int num;
-    printf("Enter Number:");
-    scanf("%d", &num);
+    // int num;
+    // printf("Enter Number:");
+    // scanf("%d", &num);
 
-    if (num > 10)
-    {
-        printf("%d is Greater Than 10\n", num);
-    }
+    // // if (num > 10)
+    // // {
+    // //     printf("%d is Greater Than 10\n", num);
+    // // }
 
-    int num1;
-    printf("Enter Number:");
-    scanf("%d", &num1);
+    // int num1;
+    // printf("Enter Number:");
+    // scanf("%d", &num1);
 
-    if (num1 > 10)
-    {
-        printf("%d is Greater Than 10\n", num1);
-    }
-    else
-    {
-        printf("%d is not greater than 10\n", num1);
-    }
+    // if (num1 > 10)
+    // {
+    //     printf("%d is Greater Than 10\n", num1);
+    // }
+    // else
+    // {
+    //     printf("%d is not greater than 10\n", num1);
+    // }
 
     int num2;
     printf("Enter Number:");
@@ -35,7 +35,7 @@ int main()
     }
     else if (num2 > 50)
     {
-        printf("%d is greater than 50 nut less than 100\n", num2);
+        printf("%d is greater than 50 but less than 101\n", num2);
     }
     else
     {

@@ -11,7 +11,7 @@ int main()
     printf("%d\n", a);
     printf("%c\n", b);
     printf("%0.2f\n", d);
-    printf("%1f\n", c);
+    printf("%lf\n", c);
 
     int integer;
     char character;
@@ -35,7 +35,7 @@ int main()
     printf("Double: %lf\n", double_number);
     printf("Float: %1f\n", float_number);
 
-    printf("Data: %d %f %f %c", integer, float_number, double_number, character);
+    printf("Data: %d %f %lf %c", character, float_number, double_number, character);
 
     return 0;
 }

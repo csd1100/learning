@@ -7,16 +7,15 @@ int main()
 
     int i = 0;
 
-    while (i < n)
-    {
-        printf("%d", i);
-    }
+    // while (i < n)
+    // {
+    //     printf("%d", i);
+
+    // }
 
     while (i < n)
     {
-        printf("%d", i);
+        printf("%d\n", i);
         i++;
     }
-
-    
 }
