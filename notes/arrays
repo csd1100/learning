@@ -1,0 +1,8 @@
+-> arrays have contiguous memeory location and have fixed size
+-> array variable for most language store location of 1st element
+-> List and arrays are different
+-> get data of array at index = starting location of the array + (index where to insert the data * size of the data); similar for set and delete
+-> insertion in array overwrites previous data
+-> Deletion means setting to zero or whatever is null value for that context
+-> array operations have O(1) (constant) time complexity
+-> Arrays needs to have size at it's allocation
