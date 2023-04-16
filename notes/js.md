@@ -34,6 +34,7 @@ console.log(`user1: ${JSON.stringify(user1)}`) // prints object with name Tim
  i.e. Objects will not be shared between the 2 requires. (Maybe?? Unless specified to have reference to global object)
 - In JS *function* is not just a function it is also an object.
 - Javascript has lexical/static scope. The function has scope from where the it was defined. Not where it runs it. Example closure. eg.
+- ***NOTE:*** If we run `outer` again then it returns a new copy of `inner` function. i.e. `func2` below is different function altogether. `func` and `func2` functions will have same definition but they are different functions.
 ```
 function outer() {
     let x = 'test'
@@ -48,6 +49,7 @@ function outer2() {
     func()
     // here scope of func (-> inner) has scope of outer not outer2
     // func will print 'test' not 'outer2'
+    let func2 = outer() //func2 is different function altogether
 }
 outer2()
 ```
