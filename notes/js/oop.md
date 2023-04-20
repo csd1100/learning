@@ -11,7 +11,7 @@
  not the `this` object to which prototype is added. This is because of JS is lexically scoped language.
  i.e. Where we define the method that will be the scope of the function. Similar to closure, here `this` will be where we define prototype object, i.e. in global scope.
 - ex. Here `method2` will throw an error because `this` is not `obj` but a global object which does not have `name` property.
-```
+```javascript
 const methodsProto = {
     method1: function() {
         console.log(this.name)
@@ -37,7 +37,7 @@ obj.method2() // throws error as name is undefined and does not print name in up
  JS is lexically scoped i.e. the scope of function will be where the function is defined.
  Hence, the `this` at that point will be `obj`.
  Arrow function can refer `this` as object not global `window`.
-```
+```javascript
 const methodsProto = {
     method1: function() {
         console.log(this.name)
@@ -61,7 +61,7 @@ obj.method2() // prints NAME
 - Then again if we use arrow function in root prototype definition
  i.e. if we use arrow function to define `method1` then it will print undefined,
  because here this will be `window` of global scope
-```
+```javascript
 const methodsProto = {
     method1: () => {
         console.log(this.name)
@@ -87,7 +87,7 @@ obj.method2() // prints NAME
  We can add methods to *prototype* property then it will be added to `__proto__`.
  And `__proto__` is actual prototype chain and `prototype` property contains only methods added to that function.<br>
  **NOTE:** But accessing `prototype` will return `undefined` if we `console.log` it.
-```
+```javascript
 function User(name) {
     this.name = name
 }
@@ -106,7 +106,7 @@ console.dir(user1.__proto__) // prints object with getName function
 - It also automatically returns the newly created object.
 - We use uppercase for function that is to be used with `new` keyword as best practise.
 - **NOTE:** The `__proto__` property is on object itself and `prototype` is property of the function that is used to create the objects using `new` keyword. i.e. in example below `__proto__` is available on `user1` and `prototype` is on `Users` function.
-```
+```javascript
 function Users(name, score) {
     this.name = name
     this.score = score
@@ -124,7 +124,7 @@ user1.increment()
     2. If function is not invoked with *dot-notation* then it will refer to `window`(in browser)/`global`(In node.js) object.
 - So that's why the nested function in javascript OOP fails because the this that it refers to will be `window`/`global`.
 e.g.
-```
+```javascript
 function CreateObj(name) {
     this.name = name // here this is newly created empty object
 }
@@ -141,7 +141,7 @@ obj.print() // prints undefined
 - The arrow functions are lexically scoped so where we define arrow function, the scope there will be the scope for arrow function.
 In below example scope of `getName` will be scope of `print`. So `this` refers to `this` of `print` method.
 e.g.
-```
+```javascript
 function CreateObj(name) {
     this.name = name // here this is newly created empty object
 }
@@ -156,7 +156,7 @@ obj.print() // prints name
 ```
 - Then again, this will *backfire* if we use arrow function in global scope, there `this` will be `window`/`global`. See code above related to `methodsProto`.
 e.g.
-```
+```javascript
 function CreateObj(name) {
     this.name = name // here this is newly created empty object
 }
@@ -169,7 +169,9 @@ obj.print() // prints undefined
 ## [OOP with `class` keyword]
 - `class` keyword is just a syntactic sugar on `prototype` keyword use.
  It groups object creator, methods and properties together. But javascript is still using prototype keyword.
-```
+- The methods defined in class are added to `prototype` in object part of function - object combo.
+- `constructor` is function of function - object combo.
+```javascript
 class User {
     constructor(name) {
         this.name = name
@@ -190,7 +192,7 @@ console.log(user1.__proto__) // prints empty object but when debugging we can se
 - In this subclassing way of using prototype chain, what we do is we create a new object using super class's object.
 - Then we set `__proto__` of new object using `setPrototypeOf()` to methods that we want in prototype of subclass.
 - The we add base / super class's prototype in chain using `setPrototypeOf()` on prototype of subclass.
-```
+```javascript
 const userFunctions = {
     sayName: function () {
         console.log(this.name)
@@ -228,7 +230,7 @@ paidUser1.sayName()
 - `Function` is a `function` - object that has some methods in it's `prototype`: `call` and `apply`.
 - If we do `someFunction.call(obj)` or `someFunction.apply(obj)` then it will call `someFunction` with argument `obj` with `this ` set to `obj`.
 e.g.
-```
+```javascript
 function someFunction (x) {
     this.x = x
 }
@@ -244,7 +246,7 @@ someFunction.apply(anotherObj2, ['z']) // it will invoke `someFunction` where `t
 - Then we can use `Object.create()` to create a empty `prototype` for subclass with chain / link to super class `prototype`.
 e.g.
 
-```
+```javascript
 function User(name) {
     this.name = name
 }
@@ -270,4 +272,33 @@ PaidUser.prototype.incrementBalance = function () {
 }
 const newPaidUser = new PaidUser('Jane', 1000)
 newPaidUser.getName() // will return Jane
+```
+### Subclassing using class keyword
+- use `extends` keyword. Just syntactic sugar on above approach.
+-  `extends` keyword does 2 things
+    1. `extends` keyword adds `User` in below example to prototype chain for `PaidUser`. i.e. sets `__proto__` of `PaidUser.prototype` to link to `User.prototype`.
+    2. sets `__proto__` of `PaidUser` (see the distinction here class/function `PaidUser` is used ***NOT*** `PaidUser.prototype`) to `User` (***NOT*** `User.prototype` but `User`).
+    <br>This is done for using `super()`, the `__proto__` of `PaidUser` has link to `User` to run `User` constructor when `super()` is invoked.
+- `super()` calls constructor of base class (`User`)
+- The `super()` internally uses `Reflect.construct()` ([`Reflect.construct()` MDN docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect/construct)) which allows call constructor without `new` keyword.
+- `this` is not accessible before `super()` is called. The value of `this` is born in `User` the we assign object created by `constructor` of `User` to `this` in `PaidUser`.
+- ***NOTE:*** if we set `__proto__` of subclass (`PaidUser`) to the `null` the `super()` call will **fail**.
+```javascript
+class User {
+    constructor(name) {
+        this.name = name
+    }
+    getName() {
+        return this.name
+    }
+}
+let user1 = new User('John')
+class PaidUser extends User {
+    constructor(name, balance) {
+        super(name)
+        this.balance = balance
+    }
+}
+const newPaidUser = new PaidUser('Jane', 1000)
+console.log(newPaidUser.getName()) // prints Jane
 ```

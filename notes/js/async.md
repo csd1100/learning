@@ -6,7 +6,7 @@
 - eg. The Hello (`printHello`) will be printed after '0','1'..'50','done' is printed or synchronous code is executed. <br>
 - The callbacks will be executed after synchronous code is run i.e. if the callback accesses some data from global scope and during execution of synchronous code the data is changed then it will use changed data not the original.
 - i.e. here in below example test won't be 1000 even though it was 1000 when `setTimeout` was called.
-```
+```javascript
 let test = 1000
 function printHello() {
     console.log('Hello')
@@ -43,7 +43,7 @@ console.log('done')
  Then 'data' will be printed as it is on *Microtask Queue* and then `setTimeoutData` as it will be on *Callback Queue*.
 
 **NOTE:** If we use promises which will recursively add functions to *Microtask Queue* without stopping then it might starve the *Callback Queue*.
-```
+```javascript
 function printData(data) {
     console.log(`data: ${data}`)
 }

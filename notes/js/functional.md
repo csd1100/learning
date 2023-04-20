@@ -5,7 +5,7 @@
     - *'accumulator'* - it collects the output e.g. string, array, number.
     - *'reducer'* - it generates the output by applying certain logic and adds it to *accumulator*.
 - e.g. reducer reduces the data to accumulator. In below example we are reducing using add as reducer and number 0 as accumulator which will accumulate sum of elements of array.
-```
+```javascript
 const reduce = (dataToReduce, reducerLogic, accumulator) => {
     for(let i = 0; i < dataToReduce.length; i++) {
         accumulator = reducerLogic(accumulator, dataToReduce[i])
@@ -19,7 +19,7 @@ reduce([1,2,3], add , 0) // outputs 6
 - We are not just reducing an array to a number but we are reducing 2 things i.e. *accumulator* and *input* to 1 thing i.e. *result*.
 We can also reduce array of numbers to an array of same size but here difference is that the output array is considered a single thing -> an accumulated output.
 e.g.
-```
+```javascript
 const reduce = (dataToReduce, reducerLogic, accumulator) => {
     for(let i = 0; i < dataToReduce.length; i++) {
         accumulator = reducerLogic(accumulator, dataToReduce[i])
@@ -45,7 +45,7 @@ reduce([1,2,3], multiplyAndPush , []) // outputs [2,4,6]
 - The term ***referentially transparent*** means we can replace the call to the function with the result without any consequences.
 - `reduce` is one of the most important functions in functional programming. It can used for *function composition*. e.g.
 Below the reduction is happening; 2 => 1 which: 1.function and 2.accumulator => 1.accumulator output.
-```
+```javascript
 const reduce = (dataToReduce, reducerLogic, accumulator) => {
     for(let i = 0; i < dataToReduce.length; i++) {
         accumulator = reducerLogic(accumulator, dataToReduce[i])
@@ -71,7 +71,7 @@ Graphical Representation:
  result = 20
 ```
 - ***Pure Functions*** are functions that only affect the data within scope of it. And has clear name that describes what it is doing. Pure functions do **not** mutate the input data.
-```
+```javascript
 const add2 = x => x + 2 // pure function
 let num = 10
 const add3 = x => {
@@ -87,7 +87,7 @@ const add3 = x => {
     - If we want a permanent memory that needs to be used every time we run a function we use closures.
     - In reality JavaScript adds a new `[[scope]]` to that function. `[[scope]]` is hidden property for the function and it is as it is named,a scope for that function. Scope is where it can look for data.
     - in below example the `x` is added to the *Closure Scope* if the function `inner`.
-```
+```javascript
 function outer() {
     let x = 'test'
     function inner() {

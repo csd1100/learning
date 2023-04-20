@@ -1,7 +1,7 @@
 # Miscellaneous
 - Javascript function always returns value not reference to value. i.e. After the value is returned it has nothing to do with function that it came from.
 - Also if we pass in a variable we are just passing value of the variable not the reference to it.
-```
+```javascript
 function add10(num) {
     num = num + 10
     return num
@@ -12,7 +12,7 @@ console.log(`result: ${result}`) // prints 11
 console.log(`number1: ${number1}`) // prints 1
 ```
 - ***BUT***, whenever we have a variable is not primitive or single value (array, objects) then what we get is actually a reference to that object and any changes we make to that object will be persistent. So below example `user1` is actually reference to object. And we are ***passing a value*** which is a **reference**.
-```
+```javascript
 function User(name) {
     this.name = name
 }
@@ -33,7 +33,7 @@ console.log(`user1: ${JSON.stringify(user1)}`) // prints object with name Tim
 - In JS *function* is not just a function it is also an object.
 - Javascript has lexical/static scope. The function has scope from where the it was defined. Not where it runs it. Example closure. eg.
 - ***NOTE:*** If we run `outer` again then it returns a new copy of `inner` function. i.e. `func2` below is different function altogether. `func` and `func2` functions will have same definition but they are different functions.
-```
+```javascript
 function outer() {
     let x = 'test'
     function inner() {
