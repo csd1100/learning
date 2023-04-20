@@ -104,7 +104,7 @@ console.dir(user1.__proto__) // prints object with getName function
 - The new keyword assigns this to new empty object. Then starts executing function used with `new` keyword.
 - It also create link between methods defined using `prototype` keyword and object through `__proto__` property on object.
 - It also automatically returns the newly created object.
-- We use uppercase for function that is to be used with `new` keyword.
+- We use uppercase for function that is to be used with `new` keyword as best practise.
 - **NOTE:** The `__proto__` property is on object itself and `prototype` is property of the function that is used to create the objects using `new` keyword. i.e. in example below `__proto__` is available on `user1` and `prototype` is on `Users` function.
 ```
 function Users(name, score) {
@@ -168,7 +168,7 @@ obj.print() // prints undefined
 ```
 ## [OOP with `class` keyword]
 - `class` keyword is just a syntactic sugar on `prototype` keyword use.
- It groups object creator, methods and properties together.
+ It groups object creator, methods and properties together. But javascript is still using prototype keyword.
 ```
 class User {
     constructor(name) {
@@ -183,4 +183,91 @@ console.dir(user1) // prints user1 object
 console.log(user1.getName()) // prints John
 console.log(user1.prototype) // prints undefined
 console.log(user1.__proto__) // prints empty object but when debugging we can see it there
+```
+## Subclassing
+### Using Prototype Chain
+-  `setPrototypeOf()` is a method that can be used to set `__proto__` of object.
+- In this subclassing way of using prototype chain, what we do is we create a new object using super class's object.
+- Then we set `__proto__` of new object using `setPrototypeOf()` to methods that we want in prototype of subclass.
+- The we add base / super class's prototype in chain using `setPrototypeOf()` on prototype of subclass.
+```
+const userFunctions = {
+    sayName: function () {
+        console.log(this.name)
+    },
+    increment: function() {
+        this.score++
+    }
+}
+function userCreator(name, score) {
+    const newUser = Object.create(userFunctions)
+    newUser.name = name
+    newUser.score = score
+    return newUser
+}
+const user1 = userCreator('John', 0)
+user1.sayName()
+
+const paidUserFunctions = {
+    incrementBalance: function() {
+        this.balance++
+    }
+}
+function paidUserCreator(paidName, paidScore, balance) {
+    const newPaidUser = userCreator(paidName, paidScore)
+    Object.setPrototypeOf(newPaidUser, paidUserFunctions)
+    newPaidUser.balance = balance
+    return newPaidUser
+}
+Object.setPrototypeOf(paidUserFunctions, userFunctions) // add link to base class functions using setPrototypeOf
+const paidUser1 = paidUserCreator('Jane', 0, 100)
+paidUser1.sayName()
+```
+### Subclassing for objects created using `new` keyword
+***NOTE for `Function` builtin `function`- object***
+- `Function` is a `function` - object that has some methods in it's `prototype`: `call` and `apply`.
+- If we do `someFunction.call(obj)` or `someFunction.apply(obj)` then it will call `someFunction` with argument `obj` with `this ` set to `obj`.
+e.g.
+```
+function someFunction (x) {
+    this.x = x
+}
+const obj = new someFunction('x') // here this will be `obj` as we are using `new` keyword
+
+const anotherObj = {} // plain old normal object
+someFunction.call(anotherObj, 'y') // it will invoke `someFunction` where `this` reference will be `anotherObj`
+const anotherObj2 = {} // plain old normal object
+someFunction.apply(anotherObj2, ['z']) // it will invoke `someFunction` where `this` reference will be `anotherObj2`
+
+```
+- We use `call` method in constructor of subclass on super constructor function that will create a subclass object using super function??.
+- Then we can use `Object.create()` to create a empty `prototype` for subclass with chain / link to super class `prototype`.
+e.g.
+
+```
+function User(name) {
+    this.name = name
+}
+User.prototype.getName = function() {
+    return this.name
+}
+
+let user1 = new User('John')
+
+function PaidUser(name, balance) {
+    // We are calling here `User` constructor function with this (this will be created when using `new` keyword)
+    // So this inside `User` will be actually object created using `new PaidUser('name')`
+    User.call(this, name)
+    this.balance = balance
+}
+
+// Object.create() creates an empty object but adds __proto__ link to object passed in as argument.
+// So we are passing `User`'s prototype in prototype chain for `PaidUser`
+PaidUser.prototype = Object.create(User.prototype)
+
+PaidUser.prototype.incrementBalance = function () {
+    this.balance++
+}
+const newPaidUser = new PaidUser('Jane', 1000)
+newPaidUser.getName() // will return Jane
 ```
