@@ -73,4 +73,27 @@ blockingTimeout(1000)
 
 console.log('done')
 ```
-- `await` keyword blocks the global execution i.e. it blocks the thread till promise resolves or rejects.
+## [`async` / `await`]
+- `await` keyword does **not** block the global execution. The `await` pauses the `async` function but continues the global synchronous execution.
+- `async` / `await` keywords pauses the execution context using generator functions.
+- Similar to `Promise` with `then`, after promise resolves the paused function using `async` / `await` goes on Microtask Queue to resume???????
+- In below example the 'start' and 'done' are still printed first then `data` 'xxx' is printed and at last `done testAwait`
+- The `testAwait` is psuedo-paused at `await` statement till promise resolves.
+```
+function promiseFunction() {
+    return new Promise(resolve => {
+        resolve('xxx')
+    })
+}
+
+async function testAwait() {
+    const data = await promiseFunction()
+    console.log(data)
+    console.log('done testAwait')
+}
+
+console.log('start')
+testAwait()
+console.log('done')
+```
+- Refer [Async Generator Functions](./misc.md#async-generators)
