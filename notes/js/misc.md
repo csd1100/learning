@@ -1,5 +1,27 @@
 # Miscellaneous
 ## Pass by Value nature with Pass by reference possible
+- `var` vs `let`
+    - Javascript hoists `var` variables i.e. when executing it puts `var` variable declaration at top of the block.
+    The `var` variable also has function scoping not block scoping.
+    So I can declare a variable later and use it before because Javascript will put it at the start of function for us.
+    So below example will work.
+    ```javascript
+    // will work
+    function willWork() {
+        b = 0;
+        var b;
+    }
+    ```
+    - ***But,*** `let` keyword only has block scoping and does not hoists to the top.
+    So if we use a variable declared using `let` before declaration it will throw an error.
+    ```javascript
+    // won't work
+    function wontWork() {
+        b = 0;
+        let b;
+    }
+    ```
+    - More info at: [For and against `let`](https://davidwalsh.name/for-and-against-let)
 - Javascript function always returns value not reference to value. i.e. After the value is returned it has nothing to do with function that it came from.
 - Also if we pass in a variable we are just passing value of the variable not the reference to it.
 ```javascript
