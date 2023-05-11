@@ -54,25 +54,70 @@ Object.is(negZero, -0) //returns true
 
 ## Type Conversion aka "Coercion"
 - If we perform any operation which has requirement of certain type like string concatenation then JavaScript will coerce try to coerce the value in required type. It uses Abstract Operations like `ToPrimitive` for coercion.
-- Abstract Operations
-    - [`ToPrimitive(hint)`](https://262.ecma-international.org/9.0/#sec-toprimitive) where `hint` is preferred type.
-     `hint` is a suggestion, `ToPrimitive` is not always going to return value of type `hint`.
-     Generally `hint` is `string` or `number`. `ToPrimitive` is not actual method but conceptual
-     operation defined in spec.
-      `ToPrimitive` is called recursively till we get primitive value. <br>
-      e.g. `valueOf()` -> `hint` is `number`, `toString()` -> `hint` is `string`.
-    - [`toString()`](https://262.ecma-international.org/9.0/#sec-tostring) - Uses `ToPrimitive(string)` internally.
-        It returns string representation.<br>
-        - `null` and `undefined` returns `"null"` and `"undefined"`.
-        - `[1,2,3]` returns `"1,2,3"`.
+- It is better to be explicit about some of the coercion because it will be easier to undefined. We can use `Boolean()`, `String()` or `toString()` and `Number()` to be explicit about coercion.
+### Abstract Operations
+- [`ToPrimitive(hint)`](https://262.ecma-international.org/9.0/#sec-toprimitive)
+    - where `hint` is preferred type. `hint` is a suggestion, `ToPrimitive` is not always going to return value of type `hint`.
+    - Generally `hint` is `string` or `number`. `ToPrimitive` is not actual method but conceptual operation defined in spec.
+    - `ToPrimitive` is called recursively till we get primitive value. <br>
+    - e.g. `valueOf()` -> `hint` is `number`, `toString()` -> `hint` is `string`.
+    - If `valueOf()` doesn't return primitive value then `ToPrimitive` calls `toString()`. `valueOf()` returns `this`.
+- [`toString()`](https://262.ecma-international.org/9.0/#sec-tostring) - Uses `ToPrimitive(string)` internally.
+    It returns string representation.<br>
+    - `null` and `undefined` returns `"null"` and `"undefined"`.
+    - `[1,2,3]` returns `"1,2,3"`.
+    - `{}` returns `[object Object]`<br>
+    - ***Caveats***
+        - `-0` returns `"0"`
+        - `[]` empty array returns `""` empty string.
+        - `[null]` array returns `""` empty string.
+        - `[undefined]` array returns `""` empty string.
+        - `[null, undefined]` returns `","` even though separate `null` and `undefined` returns `"null"` and `"undefined"`.
+        - `[[[],[],[]],[]]` returns `",,,"`
+        - `[,,,]` returns `",,,"`
         - `{}` returns `[object Object]`
-        <br>
-        - ***Caveats*** -
-            - `-0` returns `"0"`
-            - `[]` empty array returns `""` empty string.
-            - `[null, undefined]` returns `","` even though separate `null` and `undefined` returns `"null"` and `"undefined"`.
-            - `[[[],[],[]],[]]` returns `",,,"`
-            - `[,,,]` returns `",,,"`
-            - `{}` returns `[object Object]`
-            - `{a:2}` returns `[object Object]`
-        - Because of these Caveats do not use `toString()` on arrays.
+        - `{a:2}` returns `[object Object]`
+    - Because of these Caveats do not use `toString()` on arrays.
+- [`ToNumber`](https://262.ecma-international.org/9.0/#sec-tonumber)
+    - `ToNumber` uses `ToPrimitive` internally. And as stated before `ToPrimitive`
+     tries to do `valueOf()` before and if value is not primitive then does
+    `toString()`. Also till primitive is not found recursively calls `valueOf` and `toString`.
+    - For Object and Arrays `valueOf()` is not primitive so it first calls
+     `toString()` then recursively `ToPrimitive`.
+    - ***Caveats***
+        - `""` returns `0`
+        - `"  \n\t"` also returns `0`
+        - `"."` returns `NaN`
+        - `null` returns `0`
+        - `undefined` returns `NaN`
+        - `[""]` returns 0, as it first does `valueOf` which does not return primitive value.
+        - `[null]` returns 0, as it first does `valueOf` which does not return primitive value.
+        - `[undefined]` returns 0, as it first does `valueOf` which does not return primitive value.
+        - `[1,2,3]` returns NaN, as it first does `valueOf` which does not return primitive value.
+        Then `toString([1,2,3])` which returns `"1,2,3"` and `ToNumber` of `"1,2,3"` returns NaN.
+        - `[[[[[]]]]]` returns 0.
+        - `{}` object returns `NaN` as `toString` of object is `[object Object]` which is `NaN`.
+        - If we override `valueOf` then we can return whatever we want.
+- [`ToBoolean`](https://262.ecma-international.org/9.0/#sec-toboolean)
+    - Return if value is falsy or truthy.
+    - It does **not** call `ToPrimitive`.
+    - truthy values: any number other than `NaN`, 0, -0,; any string whose length > 0; true; object
+    - falsy values: `NaN`, 0 , -0, `""`, false, `undefined`, `null`
+    - ***Caveats***
+        - `[]` returns `true`
+        - `" "` returns `true` because length of string is 1.
+### Implicit Coercion
+- Template strings does string coercion. Strings with backticks (\`  \`)
+- [Binary `+` operator](https://262.ecma-international.org/9.0/#sec-addition-operator-plus-runtime-semantics-evaluation) does string coercion if we have one operand `string` and other isn't.
+- [Unary `+` operator](https://262.ecma-international.org/9.0/#sec-unary-plus-operator-runtime-semantics-evaluation) does number coercion for strings.
+- [Binary `-` operator](https://262.ecma-international.org/9.0/#sec-subtraction-operator-minus-runtime-semantics-evaluation) coerces string to number.
+- [Unary `-` operator](https://262.ecma-international.org/9.0/#sec-unary-minus-operator-runtime-semantics-evaluation) coerces string to number.
+- `if` and `while` do boolean coercion.
+- [`>`, `<`  comparison operators](https://262.ecma-international.org/9.0/#sec-abstract-relational-comparison) coerce operands to number. [Relational Operators Spec](https://262.ecma-international.org/9.0/#sec-relational-operators).
+### Boxing
+- Coercion of primitive values into Fundamental objects.
+- It is example of calling `string.length` even though `string` is primitive value. It first coerces `string` to `String`.
+### Corner Cases for Coercion
+Screenshot from FrontEndMasters course [Deep JavaScript Foundations, v3](https://frontendmasters.com/courses/deep-javascript-v3/)
+![Corner Cases](./type-coercion-corner-cases.png)
+![Corner Cases2](./type-coercion-corner-cases-2.png)
