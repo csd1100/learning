@@ -130,3 +130,5 @@ const returnNextElement = createFlow()
 const futureData = returnNextElement.next()
 futureData.then(doWhenDataReceived)
 ```
+## NOTES:
+- `++` operator tries to converts any value to number first and then performs + 1.
