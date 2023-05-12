@@ -3,7 +3,7 @@
 - **Never do comparison between values that are non-primitive and primitive. Because it will do coercion using [`ToPrimitive`](#abstract-operations) on non-primitive value. And there are many Caveats with that. It is definite footgun to be triggered.**
 - **Always be aware of what types of values you are getting in a function so that we can avoid coercion footguns.**
 - **Always design functions that will have specific types of inputs. Use JSDocs and specify types for parameters.**
-- **For `==` if both operands are non-primitive values `==` does **not** do any coercion.**
+- **For `==` if both operands are non-primitive values (objects, arrays), `==` does **not** do any coercion.**
 - **Use *`a == null`* instead of `a === null && a === undefined`.**
 
 ## Types
@@ -130,7 +130,7 @@ Object.is(negZero, -0) //returns true
 - Coercion of primitive values into Fundamental objects.
 - It is example of calling `string.length` even though `string` is primitive value. It first coerces `string` to `String`.
 ### Equality (==, ===) and Coercion
-- [`==` Equality <sup>2018](https://262.ecma-international.org/9.0/#sec-abstract-equality-comparison) - [(latest spec)](https://tc39.es/ecma262/#sec-unary-minus-operator)
+- [`==` Equality <sup>2018](https://262.ecma-international.org/9.0/#sec-abstract-equality-comparison) - [(latest spec)](https://tc39.es/ecma262/#sec-islooselyequal)
     - `==` prefers number comparison.
     - If types match `==` is same as `===`. (i.e. It internally does same thing).
     - If one of the operands is number then `==` coerces other to number as well. **Implicit Number Coercion**
