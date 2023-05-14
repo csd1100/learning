@@ -1,42 +1,80 @@
 # Go Basics
 - `_` can be used for unused variables.
-## Printing
-- `fmt` package can be used for printing the data to either console, files, or buffers.
-- There are 3 ways to print:
-    - `Print()` - Prints without newline at the end.
-    - `Println()` - Prints with newline at the end.
-    - `Printf()` - C style string formatting (i.e. `%s` - string, `%d` - integers, `%f` - float, `%t` - boolean)
-- `fmt` has 3 different set of functions for outputs
-    1. `fmt.Print()`, `fmt.Println()`, and `fmt.Printf()` - Sends output to STDOUT / console.
-    2. `fmt.Fprint()`, `fmt.Fprintln()`, and `fmt.Fprintf()` - Sends output to File.
-    3. `fmt.Sprint()`, `fmt.Sprintln()`, and `fmt.Sprintf()` - Sends output to In memory buffer i.e. variables.
+## Module
+- A module is group of packages.
 ## Packages
+- `main` package is where execution starts. ( and in `main` function. )
 - Each go file must have `package <name>` declaration at top.
-- `main` package is where execution starts.
-- Anything in package starting with Capital letter is automatically exported.
+- Single directory can have only **one** package.
+- All the files with same package should be in same directory.
+- Everything in package scope is available for entire package. i.e.
+Each file in package shares everything without need to import the file.
+- Package name and file / directory name may or may not to be same.
+- Anything in package starting with Capital letter (TitleCase) is automatically exported.
+- camelCase variables are private to package.
 - Exported values should have comment above similar to JavaDoc or JSDoc.
-- You can import packages with `import` keyword. `import` starts with repo name then internal path in repo.
 - e.g.
 ```go
 package utils
+
 var temp int// not exported
+
 // Some Data (go-doc)
 var Data string// exported
+
 func test(){} // not exported
-// Function that does something
+
+// Function that does something (go-doc)
 func Function(){} // exported
-// Users with name and ID
+
+// Users with name and ID (go-doc)
 type User struct{ // User struct is exported
     ID int // ID is exported
     name string // name is not exported
 }
 ```
-## Types and Variables
+- Imports are per file though not package level.
+- You can import packages with `import` keyword. `import` starts with module name then internal path in repo.
+- To import the package we have to give directory path to `import` declaration,
+but to access exported values we need to use package name which might not be similar to directory.
+- e.g. In following example the `not_tmp` package is in `tmp` directory.
+So we `import` directory ` module/tmp`. But to access actual package we need to use package name i.e. `not_tmp`.
+```go
+// path: ./tmp/package-file.go
+package not_tmp
+
+const Test = 1
+```
+```go
+// path: ./main.go
+package main
+
+import "module/tmp" // need to import directory `tmp`
+
+func main() {
+    print(not_tmp.Test) // need to use package name `not_tmp`
+}
+```
+## Printing
+- `fmt` package can be used for printing the data to either console, files, or buffers.
+- There are 3 ways to print:
+- `Print()` - Prints without newline at the end.
+    - `Println()` - Prints with newline at the end.
+- `Printf()` - C style string formatting (i.e. `%s` - string, `%d` - integers, `%f` - float, `%t` - boolean)
+    - `fmt` has 3 different set of functions for outputs
+    1. `fmt.Print()`, `fmt.Println()`, and `fmt.Printf()` - Sends output to STDOUT / console.
+    2. `fmt.Fprint()`, `fmt.Fprintln()`, and `fmt.Fprintf()` - Sends output to File.
+    3. `fmt.Sprint()`, `fmt.Sprintln()`, and `fmt.Sprintf()` - Sends output to In memory buffer i.e. variables.
+## Types, Variables and Constants
 - Declaration - `var <identifier> <datatype> = <value>`
+- Declaration - `const <identifier> <string|bool|int> = value`
+- Constants can only be of type `string`, `bool`, or `int`. They **must** have value at the time of declaration.
 - Strings always in double quotes.
 - Conversions - `<datatype>(another_value)` will type cast another_value to `type`
-- There is a special `:=` operator that can be used to drop both use of `var` keyword and type definition.<br> The datatype will be inferred.
+- There is a special `:=` operator that can be used to drop both use of `var` keyword and type definition.
+The datatype will be inferred. Doesn't work outside functions.
 ```go
+    const t bool = true
     // all 3 are equivalent
     var a string = "Hello"
     var b = "Hello"
@@ -45,17 +83,26 @@ type User struct{ // User struct is exported
 ## Conditionals
 - `if`/`else if`/`else` are supported. Parenthesis are not required around condition.
 - `if` block can execute code as well and variables defined in that will be scoped in `if`/`else`.
+- The condition should be last in execution though. Like in below example condition is last `err != nil`.
 - e.g.
 ```go
     if err := someFunc(); err != nil {
         // err is scoped here
     }
 ```
-- `switch` is similar to other C style languages but has `or` possible in `case`. Does not have `fallthrough`. i.e. no need for `break`. `fallthrough` can be used to go forward in switch.
+- `switch` is kind of similar to other C style languages. But,
+    - Does not have `break`.
+    - To go to next cases `fallthrough` can be used.
+    - Has logical OR possible in `case`.
+    - The predicate itself can be removed and cases can have boolean evaluation.
 - e.g.
 ```go
-    a := 10
-    switch a {
+    switch {
+        case a == 9:
+            // breaks here
+        case a == 10:
+            //...
+            fallthrough // executes next conditions as well
         case a < 11, a > 5:
             // or condition
         default:
@@ -84,8 +131,10 @@ for index, letterNum := range sentence {
 }
 ```
 ## Functions
-- Declared with `func` keyword. Parameters in parenthesis. The datatype of parameters is specified after parameter separated by space. After parenthesis specifies the return datatype.
-- Can also return more than 1 values.
+- Declared with `func` keyword. Parameters in parenthesis.
+The datatype of parameters is specified after parameter separated by space.
+After parenthesis specifies the return datatype.
+- Can also return more than 1 values. Greatly used for error handling.
 - e.g.
 ```go
 // func identifier(param1 datatype, param2 datatype) return_type {}
@@ -93,7 +142,9 @@ func someFunc(data int) (int, int) {
     return 0, 1
 }
 ```
-- Return values can also have identifier. i.e. we can specify identifiers we want to use in functions for values to be returned. This can be used to remove specifying what should be returned with `return`.
+- Return values can also have identifier. i.e. We can specify identifiers we want
+to use in functions for values to be returned.
+This can be used to remove specifying what should be returned with `return`.
 - e.g.
 ```go
 // returns 0,1
@@ -108,6 +159,40 @@ func someFunc(data int) (a int, b int) {
 ```go
 func someFunc(ages ...int) {
     // ....
+}
+```
+### `init()` function
+- There is a special function named `init()` which can be used to initialize the data.
+- This is executed before execution of `main`.
+- There can be multiple `init()` function definition in a same package.
+- Multiple `init()` can be used to modularize initialization of data.
+- The `init()` functions are executed in the order of definition. And for package `init()` whenever the package file is used in code before using that part `init()` is executed.
+- e.g. `init()` is invoked before `main`.
+```go
+package main
+
+var greeting string
+func init() {
+    greeting = "Hello"
+}
+func main() {
+    println(greeting) // prints hello
+}
+
+```
+### `defer` keyword
+- `defer` keyword can defer the invocation of the functions till *before* the `return` or the completion of function.
+- `defer` calls can be used for cleanup for `panic`s.
+- e.g. Will print in sequence in comments. The first `defer` will be done last because it was added before. It is similar to stack. We are stacking defer calls so last in is first out.
+```go
+functions test() int {
+    defer fmt.Println("defer") // 6
+    fmt.Println("first") // 1
+    defer fmt.Println("defer 2") // 5
+    fmt.Println("second") // 2
+    defer fmt.Println("defer 3") // 4
+    fmt.Println("third") // 3
+    return 1
 }
 ```
 ## Arrays
@@ -215,7 +300,8 @@ fmt.Println("TypeOf(namePointer): ", reflect.TypeOf(namePointer)) // prints *str
 fmt.Println("value: ", value) // abs
 ```
 ## Pass by Value / Pass by Reference
-- Go supports both Pass by Value and Pass by Reference.
+- Go supports both Pass by Value (always) and Pass by Reference (pointer).
+- But it is always pass by value.
 - For Pass by Reference pass pointer to variable.
 - If we want to update `map` we will use Pass by Reference by using pointers.
 - For `struct` we do not need to use `*` and `&`. We can directly access properties of struct.
@@ -254,4 +340,4 @@ func main() {
 - Errors in go are values rather than exceptions.
 - There are 2 types
     1. Error - Something bad happened but program doesn't stops.
-    2. Panic - Program stops, this is unrecoverable error. Happens at run-time.
+    2. Panic - `panic()` - Program stops, this is unrecoverable error. Happens at run-time.
