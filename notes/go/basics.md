@@ -1,5 +1,6 @@
 # Go Basics
 - `_` can be used for unused variables.
+- go prefers tabs over spaces. [docs](https://go.dev/doc/effective_go#formatting)
 ## Module
 - A module is group of packages.
 ## Packages
@@ -29,8 +30,8 @@ func Function(){} // exported
 
 // Users with name and ID (go-doc)
 type User struct{ // User struct is exported
-    ID int // ID is exported
-    name string // name is not exported
+	ID int // ID is exported
+	name string // name is not exported
 }
 ```
 - Imports are per file though not package level.
@@ -52,7 +53,7 @@ package main
 import "module/tmp" // need to import directory `tmp`
 
 func main() {
-    print(not_tmp.Test) // need to use package name `not_tmp`
+	print(not_tmp.Test) // need to use package name `not_tmp`
 }
 ```
 ## Types, Variables and Constants
@@ -64,11 +65,11 @@ func main() {
 - There is a special `:=` operator that can be used to drop both use of `var` keyword and type definition.
 The datatype will be inferred. Doesn't work outside functions.
 ```go
-    const t bool = true
-    // all 3 are equivalent
-    var a string = "Hello"
-    var b = "Hello"
-    b := "Hello"
+const t bool = true
+// all 3 are equivalent
+var a string = "Hello"
+var b = "Hello"
+b := "Hello"
 ```
 ## Conditionals
 - `if`/`else if`/`else` are supported. Parenthesis are not required around condition.
@@ -76,9 +77,9 @@ The datatype will be inferred. Doesn't work outside functions.
 - The condition should be last in execution though. Like in below example condition is last `err != nil`.
 - e.g.
 ```go
-    if err := someFunc(); err != nil {
-        // err is scoped here
-    }
+if err := someFunc(); err != nil {
+	// err is scoped here
+}
 ```
 - `switch` is kind of similar to other C style languages. But,
     - Does not have `break`.
@@ -87,37 +88,36 @@ The datatype will be inferred. Doesn't work outside functions.
     - The predicate itself can be removed and cases can have boolean evaluation.
 - e.g.
 ```go
-    switch {
-        case a == 9:
-            // breaks here
-        case a == 10:
-            //...
-            fallthrough // executes next conditions as well
-        case a < 11, a > 5:
-            // or condition
-        default:
-
-    }
+switch {
+	case a == 9:
+	// breaks here
+	case a == 10:
+	//...
+		fallthrough // executes next conditions as well
+	case a < 11, a > 5:
+	// or condition
+	default:
+}
 ```
 ## Loops
 - only `for` loop is available not `while`. `for` can be executed similar to while though.
 - As java or c++ it does not strict condition of 2 `;`. So it can be used as while.
 - e.g.
 ```go
-    // while imitation
-    i := 0
-    for i < 100 {
-        i += 1
-    }
+// while imitation
+i := 0
+for i < 100 {
+	i += 1
+}
 ```
 - `range` keyword can be used to iterate over things. For strings though `range` will need typecasting characters to string.
 - e.g.
 ```go
 var sentence = "Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat."
 for index, letterNum := range sentence {
-    if (index)%2 == 1 {
-        fmt.Print(string(letterNum))
-    }
+	if (index)%2 == 1 {
+		fmt.Print(string(letterNum))
+	}
 }
 ```
 ## Functions
@@ -129,7 +129,7 @@ After parenthesis specifies the return datatype.
 ```go
 // func identifier(param1 datatype, param2 datatype) return_type {}
 func someFunc(data int) (int, int) {
-    return 0, 1
+	return 0, 1
 }
 ```
 - Return values can also have identifier. i.e. We can specify identifiers we want
@@ -139,16 +139,16 @@ This can be used to remove specifying what should be returned with `return`.
 ```go
 // returns 0,1
 func someFunc(data int) (a int, b int) {
-    a = 0
-    b = 1
-    return
+	a = 0
+	b = 1
+	return
 }
 ```
 - `...` can be used to pass in variable arguments.
 - e.g. `ages` in below code block is list of `int`s.
 ```go
 func someFunc(ages ...int) {
-    // ....
+	// ....
 }
 ```
 ### `init()` function
@@ -163,10 +163,10 @@ package main
 
 var greeting string
 func init() {
-    greeting = "Hello"
+	greeting = "Hello"
 }
 func main() {
-    println(greeting) // prints hello
+	println(greeting) // prints hello
 }
 
 ```
@@ -176,13 +176,13 @@ func main() {
 - e.g. Will print in sequence in comments. The first `defer` will be done last because it was added before. It is similar to stack. We are stacking defer calls so last in is first out.
 ```go
 functions test() int {
-    defer fmt.Println("defer") // 6
-    fmt.Println("first") // 1
-    defer fmt.Println("defer 2") // 5
-    fmt.Println("second") // 2
-    defer fmt.Println("defer 3") // 4
-    fmt.Println("third") // 3
-    return 1
+	defer fmt.Println("defer") // 6
+	fmt.Println("first") // 1
+	defer fmt.Println("defer 2") // 5
+	fmt.Println("second") // 2
+	defer fmt.Println("defer 3") // 4
+	fmt.Println("third") // 3
+	return 1
 }
 ```
 ## Arrays
@@ -233,8 +233,8 @@ map1[2]="abs"
 
 // shorthand
 map2 := map[int]string{
-    1: "sss",
-    2: "abs",
+	1: "sss",
+	2: "abs",
 }
 val1, status := map2[4] // returns nothing, false
 delete(map2, 2) // will delete "abs"
@@ -252,10 +252,10 @@ package main
 type float = float64
 
 func main() {
-    var a float64 = 13.4
-    var b float = 22.2
-    c := a + b // can be done without any typecasting
-    print(c)
+	var a float64 = 13.4
+	var b float = 22.2
+	c := a + b // can be done without any typecasting
+	print(c)
 }
 ```
 ### Custom Types
@@ -273,17 +273,19 @@ package main
 type distance float64
 
 func main() {
-    var a float64 = 13.4
-    var b distance = 22.2
-    // c := a + b // cannot be done; will throw error about types
-    c := distance(a) + b // need to typecast before using float64 values in arithmetics
-    print(c)
+	var a float64 = 13.4
+	var b distance = 22.2
+	// c := a + b // cannot be done; will throw error about types
+	c := distance(a) + b // need to typecast before using float64 values in arithmetics
+	print(c)
 }
 ```
-## Methods
+### Methods
 - A way to add functions specific to types.
 - Can be only added on local types.
 - e.g. It can be used to create `toString()` method for `map` or `struct`.
+- `String()` method is default method like `toString()` for Java.
+<br>***NOTE***: `println()`(all other print methods) method do not use `String()` only `fmt.Println()`(all fmt functions) does.
 - **Syntax** - `func (valOfType <type_for_which_method>) methodName([param1 <any_type>]) <return_type> {}`
 - e.g.
 ```go
@@ -297,24 +299,24 @@ type distanceM float64
 
 func (km distanceKM) toMeter() distanceM {
 	return distanceM(float64(km) * 1000.) // the `.` at end of 1000 is not a typo
-    // can be used to denote a floating point number - 1000. (1000.0)
+	// can be used to denote a floating point number - 1000. (1000.0)
 }
 
 func (km distanceKM) toString() string {
-    return fmt.Sprintf("%v KM", km)
+	return fmt.Sprintf("%v KM", km)
 }
 
-func (m distanceM) toString() string {
-    return fmt.Sprintf("%v M", m)
+func (m distanceM) String() string {
+	return fmt.Sprintf("%v M", float64(m))
 }
 
 func main() {
-    var a float64 = 13.4
-    var b distanceKM = 22.2
-    c := distanceKM(a) + b
-    println(c)
-    println(c.toString())
-    println(c.toMeter().toString())
+	var a float64 = 13.4
+	var b distanceKM = 22.2
+	c := distanceKM(a) + b
+	fmt.Println(c)
+	fmt.Println(c.toString())
+	fmt.Println(c.toMeter()) // will automatically use `String()`
 }
 ```
 ### Structures
@@ -328,20 +330,134 @@ func main() {
 ```go
 package main
 type User struct {
-    ID int
-    Name string
+	ID int
+	Name string
 }
 
 func main() {
-    u := User{
-        ID: 1,
-        Name: "Test", // `,` is necessary
-    }
-    fmt.Println(u) // prints {1 Test}
-    fmt.Println(reflect.TypeOf(u)) // prints main.User where `main` is package name
+	u := User{
+	ID: 1,
+	Name: "Test", // `,` is necessary
+	}
+	fmt.Println(u) // prints {1 Test}
+	fmt.Println(reflect.TypeOf(u)) // prints main.User where `main` is package name
+}
+```
+#### Embedding
+- Embedding type is similar to JavaScript's inheritance using prototypes.
+- It's not like OOP inheritance. In the end they are different types altogether.
+- For Embedding a type just add a type in struct definition without identifier.
+- The only problem is that we cannot directly add properties for embedded type in constructor.
+- Methods are also embedded.
+- There can be problem with name collision with multiple embeddings.
+- e.g.
+```go
+type User struct {
+	Id int
+	Name string
+}
+type PaidUser struct {
+	User //embedded type User
+	Balance float64
 }
 
+func createPaidUser(id int, name string, balance float64) PaidUser {
+	return PaidUser{
+		// need to pass a User instead of properties separated
+		User {
+			Id: id,
+			Name: name,
+		},
+		balance,
+	}
+}
+
+// another way
+func newPaidUser(id int, name string, balance float64) PaidUser {
+	p := PaidUser{}
+	p.Id = id
+	p.Name = name
+	p.Balance = balance
+	return p
+}
 ```
+### Interfaces
+- Definition of method signatures.
+- Emulation of Polymorphism.
+- If method signatures is in interface and a `struct` or type implements a method
+- i.e. We don't need to use any keyword.
+it is automatically (implicitly) implements the interface.
+- **Syntax** - `type <name> interface{ //... method signatures }`
+- Using empty interface (without any methods so every type is considered to implement it) we can create slices of any type.
+- We can cast value in interface by `value.(<type>)`
+- e.g.
+```go
+package main
+
+import "fmt"
+
+type Printable interface {
+	Prints() string
+}
+
+type User struct {
+	Id   int
+	Name string
+}
+
+type PaidUser struct {
+	Id      int
+	Name    string
+	Balance float64
+}
+
+// implicit implementation of interface Printable
+func (u User) Prints() string {
+	return fmt.Sprintf("%v", u.Name)
+}
+
+// implicit implementation of interface Printable
+func (p PaidUser) Prints() string {
+	return fmt.Sprintf("%v*", p.Name)
+}
+
+type Any interface {}
+
+func main() {
+	u := User{
+		Id:   1,
+		Name: "John Doe",
+	}
+	pu := PaidUser{
+		Id:      1,
+		Name:    "Jane Doe",
+		Balance: 10000.,
+	}
+
+	var printableUsers [2]Printable
+	printableUsers[0] = u
+	printableUsers[1] = pu
+
+	// casting of value
+	fmt.Println(printableUsers[0].(User).Prints()) // printableUsers[0] will be cast to User
+
+	for _, user := range printableUsers {
+		fmt.Println(user.Prints())
+	}
+
+	// slice of all types
+	var sliceOfAnyType []Any
+	sliceOfAnyType = append(sliceOfAnyType, "f32")
+	sliceOfAnyType = append(sliceOfAnyType, 32)
+	// ^Above can be easily done as
+	var sliceOfAll []interface{}
+	sliceOfAll = append(sliceOfAll, "f32")
+	sliceOfAll = append(sliceOfAll, 32)
+	fmt.Println(sliceOfAnyType)
+	fmt.Println(sliceOfAll)
+}
+```
+
 ## Pointers
 - Pointers can be declared as `var ptr *<datatype>` where `ptr` will be pointer to value of type `<datatype>`.
 - `*<datatype>` is different type altogether i.e. pointer type.
@@ -377,31 +493,31 @@ fmt.Println("value: ", value) // abs
 package utils
 
 type User struct {
-    ID int
-    Name string
+	ID int
+	Name string
 }
 
 func EditName(u *User, name string) {
-    u.Name = name
+	u.Name = name
 }
 //---------------
 package main
 
 import (
-    "test.com/this/utils"
-    "fmt"
-    "reflect"
+	"test.com/this/utils"
+	"fmt"
+	"reflect"
 )
 
 func main() {
-    u := utils.User{
-        ID:   1,
-        Name: "Test",
-    }
-    fmt.Println(u) // prints {1 Test}
-    fmt.Println(reflect.TypeOf(u)) // prints utils.User
-    utils.EditName(&u, "test2")
-    fmt.Println(u) // prints {1 test2}
+	u := utils.User{
+		ID:   1,
+		Name: "Test",
+	}
+	fmt.Println(u) // prints {1 Test}
+	fmt.Println(reflect.TypeOf(u)) // prints utils.User
+	utils.EditName(&u, "test2")
+	fmt.Println(u) // prints {1 test2}
 }
 ```
 ## Error handling
