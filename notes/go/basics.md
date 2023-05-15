@@ -151,6 +151,36 @@ func someFunc(ages ...int) {
 	// ....
 }
 ```
+### Closures
+- Go also supports closures but closure values are actually reference.
+- So if actual value changes before execution the closure will also get updated value.
+- e.g. The program will print `3` three times because at the time of execution of `printInt(i)` in goroutines,
+`i` is 3 because `i` is closure variable and will have reference to outer scope `i` whose value is already 3.
+```go
+// Don't do this
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func printInt(val int) {
+	fmt.Println(val)
+}
+
+func main() {
+	wg := sync.WaitGroup{}
+	for  i := 0; i < 3 ; i++ {
+		wg.Add(1)
+		go func() {
+			printInt(i) // will always print 3
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+}
+```
 ### `init()` function
 - There is a special function named `init()` which can be used to initialize the data.
 - This is executed before execution of `main`.
@@ -573,6 +603,7 @@ func main() {
 - Value can be assigned to channel by using `<-` operator.
 - A goroutine can wait for value from channel also by using `<-` variable.
 Also we can access data passed through channel same way.
+- We can use `close(chan)` method to close the channel.
 - In `make` we can also define how many values to wait for.
 e.g. `c := make(chan string, 2)` then we can setup waiting for `c` for 2 values across channel.
 If we do not send `2` values for `c` but add 2 listeners then program will `panic`.
