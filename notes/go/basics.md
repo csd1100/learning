@@ -384,9 +384,9 @@ func newPaidUser(id int, name string, balance float64) PaidUser {
 ### Interfaces
 - Definition of method signatures.
 - Emulation of Polymorphism.
-- If method signatures is in interface and a `struct` or type implements a method
-- i.e. We don't need to use any keyword.
+- If **ALL** method signatures is in interface and a `struct` or type implements a method
 it is automatically (implicitly) implements the interface.
+- i.e. We don't need to use any keyword.
 - **Syntax** - `type <name> interface{ //... method signatures }`
 - Using empty interface (without any methods so every type is considered to implement it) we can create slices of any type.
 - We can cast value in interface by `value.(<type>)`
