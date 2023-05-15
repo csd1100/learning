@@ -55,16 +55,6 @@ func main() {
     print(not_tmp.Test) // need to use package name `not_tmp`
 }
 ```
-## Printing
-- `fmt` package can be used for printing the data to either console, files, or buffers.
-- There are 3 ways to print:
-- `Print()` - Prints without newline at the end.
-    - `Println()` - Prints with newline at the end.
-- `Printf()` - C style string formatting (i.e. `%s` - string, `%d` - integers, `%f` - float, `%t` - boolean)
-    - `fmt` has 3 different set of functions for outputs
-    1. `fmt.Print()`, `fmt.Println()`, and `fmt.Printf()` - Sends output to STDOUT / console.
-    2. `fmt.Fprint()`, `fmt.Fprintln()`, and `fmt.Fprintf()` - Sends output to File.
-    3. `fmt.Sprint()`, `fmt.Sprintln()`, and `fmt.Sprintf()` - Sends output to In memory buffer i.e. variables.
 ## Types, Variables and Constants
 - Declaration - `var <identifier> <datatype> = <value>`
 - Declaration - `const <identifier> <string|bool|int> = value`
@@ -249,7 +239,85 @@ map2 := map[int]string{
 val1, status := map2[4] // returns nothing, false
 delete(map2, 2) // will delete "abs"
 ```
-## Structs
+## Custom types and Aliases
+### Aliases
+- Aliases are just alias/name for existing type. Similar to creating link to type.
+- Values created with alias can be used with original type directly without need for casting.
+- **Syntax** - `type <newName> = <type>`
+- e.g.
+```go
+package main
+
+// alias
+type float = float64
+
+func main() {
+    var a float64 = 13.4
+    var b float = 22.2
+    c := a + b // can be done without any typecasting
+    print(c)
+}
+```
+### Custom Types
+- Custom Types are types created using existing types.
+- They can be used to add semantic meaning to code.
+- We cannot perform operations between custom types and original types from
+they are created without typecasting.
+- Can be used for creating functions with more semantic meaning.
+- Can be used to add methods with semantic meaning on existing types.
+- **Syntax** - `type <new_type_name> <existing_type>`
+- e.g.
+```go
+package main
+// type
+type distance float64
+
+func main() {
+    var a float64 = 13.4
+    var b distance = 22.2
+    // c := a + b // cannot be done; will throw error about types
+    c := distance(a) + b // need to typecast before using float64 values in arithmetics
+    print(c)
+}
+```
+## Methods
+- A way to add functions specific to types.
+- Can be only added on local types.
+- e.g. It can be used to create `toString()` method for `map` or `struct`.
+- **Syntax** - `func (valOfType <type_for_which_method>) methodName([param1 <any_type>]) <return_type> {}`
+- e.g.
+```go
+package main
+
+import "fmt"
+
+// type
+type distanceKM float64
+type distanceM float64
+
+func (km distanceKM) toMeter() distanceM {
+	return distanceM(float64(km) * 1000.) // the `.` at end of 1000 is not a typo
+    // can be used to denote a floating point number - 1000. (1000.0)
+}
+
+func (km distanceKM) toString() string {
+    return fmt.Sprintf("%v KM", km)
+}
+
+func (m distanceM) toString() string {
+    return fmt.Sprintf("%v M", m)
+}
+
+func main() {
+    var a float64 = 13.4
+    var b distanceKM = 22.2
+    c := distanceKM(a) + b
+    println(c)
+    println(c.toString())
+    println(c.toMeter().toString())
+}
+```
+### Structures
 - Like C or C++ structs i.e. group of values.
 - Example of complex and user-defined datatypes.
 - Can be defined as `type <Name> struct {//...}`
