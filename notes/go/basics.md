@@ -382,10 +382,10 @@ func newPaidUser(id int, name string, balance float64) PaidUser {
 }
 ```
 ### Interfaces
-- Definition of method signatures.
+- List of of method signatures.
 - Emulation of Polymorphism.
-- If **ALL** method signatures is in interface and a `struct` or type implements a method
-it is automatically (implicitly) implements the interface.
+- If **ALL** method signatures in interface are implemented by `struct` or the type then
+it automatically (implicitly) implements the interface.
 - i.e. We don't need to use any keyword.
 - **Syntax** - `type <name> interface{ //... method signatures }`
 - Using empty interface (without any methods so every type is considered to implement it) we can create slices of any type.
@@ -525,3 +525,81 @@ func main() {
 - There are 2 types
     1. Error - Something bad happened but program doesn't stops.
     2. Panic - `panic()` - Program stops, this is unrecoverable error. Happens at run-time.
+## GO-Routines
+- Multi-threading approach in go.
+- Go has main goroutine which runs `main.main()`.
+- If we add `go` keyword at the start of the function call it will spawn a new goroutine to execute the function.
+- e.g.
+```go
+package main
+
+import "fmt"
+
+func prints5Times(str string) {
+	for i := 0; i < 5; i++ {
+		fmt.Println(str)
+	}
+}
+
+func main() {
+	go prints5Times("hello") // spawns a new goroutine
+	prints5Times("bye")
+}
+```
+- In main if we run each function call in goroutine then most probably nothing happens because main goroutine ends
+after spawning goroutines.
+```go
+package main
+
+import "fmt"
+
+func prints5Times(str string) {
+	for i := 0; i < 5; i++ {
+		fmt.Println(str)
+	}
+}
+
+func main() {
+	// will do nothing as main goroutine will just spawn below 2 goroutine and exit
+	go prints5Times("hello")
+	go prints5Times("bye")
+}
+```
+### Channels
+- Can be used for communication between multiple goroutines.
+- It is type of variable declared by using keyword `chan`
+- **Syntax** - `var <name> chan <type>`
+- A channel can be initialized with `make` function.
+- Value can be assigned to channel by using `<-` operator.
+- A goroutine can wait for value from channel also by using `<-` variable.
+Also we can access data passed through channel same way.
+- In `make` we can also define how many values to wait for.
+e.g. `c := make(chan string, 2)` then we can setup waiting for `c` for 2 values across channel.
+If we do not send `2` values for `c` but add 2 listeners then program will `panic`.
+- e.g.
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func prints5Times(str string, done chan bool) {
+	for i := 0; i < 5; i++ {
+		fmt.Println(str)
+	}
+	time.Sleep(time.Second * 2) // pause for 2 sec
+	done <- true                // send value across channel between goroutines
+}
+
+func main() {
+	var done chan bool
+	done = make(chan bool) // initialize channel *MUST*
+	go prints5Times("hello", done)
+	isDone := <-done // wait for value from other goroutine
+	if isDone {
+		fmt.Println("bye")
+	}
+}
+```
