@@ -376,10 +376,11 @@ func main() {
 #### Embedding
 - Embedding type is similar to JavaScript's inheritance using prototypes.
 - It's not like OOP inheritance. In the end they are different types altogether.
-- For Embedding a type just add a type in struct definition without identifier.
+- For implementing *'embedding of a type*' just add a type in struct definition without identifier.
 - The only problem is that we cannot directly add properties for embedded type in constructor.
 - Methods are also embedded.
 - There can be problem with name collision with multiple embeddings.
+- We can override methods in embedded type. But we can also use base methods as is if not defined in embedded.
 - e.g.
 ```go
 type User struct {
@@ -409,6 +410,54 @@ func newPaidUser(id int, name string, balance float64) PaidUser {
 	p.Name = name
 	p.Balance = balance
 	return p
+}
+```
+- e.g.2.
+```go
+package main
+
+import "fmt"
+
+type Interface interface {
+	PrintsHello()
+	PrintsXXX()
+}
+
+type Base struct {
+	Name string
+}
+
+func (b Base) PrintsXXX() {
+	fmt.Println("xxx")
+}
+
+func (b Base) PrintsHello() {
+	fmt.Println("Hello ", b.Name)
+}
+
+type Embedded struct {
+	Base
+}
+
+// override PrintsXXX from Base
+func (e Embedded) PrintsXXX() {
+	fmt.Println("yyy")
+}
+
+func main() {
+	var B Interface = Base{
+		Name: "Base",
+	}
+	B.PrintsXXX() // prints "xxx"
+	B.PrintsHello() // prints "Hello Base"
+
+	// implements same interface automatically cause of embedding
+	// even though only PrintsXXX is implemented
+	var E Interface = Embedded{
+		Base{Name: "Embedded"},
+	}
+	E.PrintsXXX() // prints "yyy"
+	E.PrintsHello() // prints "Hello Embedded"
 }
 ```
 ### Interfaces
