@@ -4,17 +4,17 @@
 The task is idempotent if it's output remains same regardless.
 e.g. If user is already present then task to add user shouldn't fail.
 
-## inventory
+## Inventory
 - Assets to be managed.
 - Default inventory is in `/etc/ansible/hosts`.
 - Can be defined per project in file format and using **`-i <filename>`** flag.
 
-## ad-hoc commands
+## Ad-hoc commands
 - `ansible` command can be used to run ad-hoc commands
 - ex. `ansible <host_name> -m <module_name> -a <args>`
 - `ansible-doc` for checking documentation from cli. e.g. `ansible-doc -t module <module_name>`
 
-## common modules
+## Common modules
 - `ansible.builtin.command`<sup>*</sup> - Useful to run commands on hosts without shell and piping outputs
     doesn't work.- `ansible.builtin.shell` - Useful to run command using shell, piping works.
 - `ansible.builtin.raw`<sup>*</sup> - Useful to run commands without python installed. All modules use python so if python
@@ -82,3 +82,60 @@ The name of the files of vars should be same as group name.
 - Or in older versions as ansible_default_ipv4.address
 - Gathering facts takes time and if you do not need to use facts then for a play it can be disabled in play header using `gather_facts: no`.
 - `setup` module gives you all the facts if you want to see them before hand.
+- If facts gathering is slow setup host name resolution i.e. specify entries in `/etc/hosts` for faster resolution.
+### Magic variables
+- Magic variables are variables that reserved ansible variables and cannot be used.
+- they are
+    - hostvars
+    - groups
+    - group_names
+    - inventory_hostname
+    - inventory_hostname_short
+
+### Registers
+- They are variables to store command result
+- We can use `register: <var_name>` to store result of command.
+- e.g.
+```yaml
+- name: Registers
+  hosts: localhost
+  tasks:
+    - name: ls
+      shell: ls
+      register: ls_out
+    - debug:
+        var: ls_out
+    - debug:
+        msg: status code of ls {{ ls_out['rc'] }}
+```
+
+### Conditionals
+#### Handlers
+- A handler is task is only executed when task it is triggered by has changed something.
+- They are executed after tasks in playbooks.
+- If any task fails after task that triggers handler then handler is not executed but `force_handlers` a boolean value can be used in play definition to run handler forcefully.
+- Handlers are defined using `handlers:` in play.
+- `notify:` is used in tasks to trigger handlers.
+e.g.
+```yaml
+- name: handlers play
+  hosts: localhost
+  tasks:
+    - name: write hello_world
+      shell: echo hello_world > /tmp/tmp
+      notify:
+        - copy_hello_world
+  handlers:
+    - name: copy_hello_world
+      shell: cp /tmp/tmp /tmp/hello_world
+
+```
+#### When
+- Tasks are run only when a condition is true.
+- Using `when:` in task definition.
+- We can use `when: myvar is defined` to check if variable is present.
+- We can use `when: myvar in vars` to check if value of `myvar` is present in `vars` variable.
+- We can also use python functions in when like `find()`
+## Ansible vault
+- Store secure data using encryption.
+- Can be used using `ansible-vault` command
