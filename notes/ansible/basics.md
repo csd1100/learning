@@ -1,9 +1,25 @@
 # Ansible
 - Configuration as Code
-- Idempotency is important in ansible. Idempotency means that result matters the most.
-The task is idempotent if it's output remains same regardless.
+- Idempotency is important in ansible.
+- An operation is idempotent if the result of performing it once is exactly the same as the result of performing it repeatedly without any intervening actions.
+- The task is idempotent if it's output remains same regardless.
 e.g. If user is already present then task to add user shouldn't fail.
 
+## Ansible config
+- It is stored at location `/etc/ansible/ansible.cfg`
+- e.g.
+```
+[defaults]
+inventory = inventory
+remote_user = ansible
+host_key_checking = false
+
+[privilege_escalation]
+become = True
+become_method = sudo
+become_user = root
+become_ask_pass = False
+```
 ## Inventory
 - Assets to be managed.
 - Default inventory is in `/etc/ansible/hosts`.
@@ -219,3 +235,26 @@ e.g.
 ## Ansible vault
 - Store secure data using encryption.
 - Can be used using `ansible-vault` command
+
+## Ansible collections
+- New way to bundle ansible contents
+- Collections may contains:
+    - modules
+    - rules
+    - plugins
+- Collection have FQCN (Fully Qualified Collection Name) e.g. `ansible.builtin.copy`.
+- The FQCN can also be defined in play header to make them backwards compatible.
+- Collections can be defined at play level using `collections:` array.
+- In ansible version 2.9 the collections need to be installed before hand.
+We can specify required collections in `requirements.yml`.
+
+## Ansible roles
+- Community provided standard solution for common tasks like setting up docker.
+- They are on ansible galaxy.
+- We can also create roles yourself.
+- Tasks in roles are executed before tasks.
+- We can change that behavior with `pre_tasks:` flag.
+- We need to install a role using command `ansible-galaxy role install <role_name>`
+
+# Ansible Galaxy
+- `ansible-galaxy` command can be used to manage roles and collection from [Ansible Galaxy](https://galaxy.ansible.com).
