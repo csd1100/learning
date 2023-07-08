@@ -33,6 +33,7 @@ become_ask_pass = False
 ## Playbooks
 - Use `ansible-playbook` command
 - Each playbook can have multiple plays.
+- We can also use flags like `--start-at-task <taskname>` to run playbook from any stage or task.
 - Each play has at least following properties: name, hosts, tasks.
 - template of playbook:
 ```yaml
@@ -52,6 +53,10 @@ become_ask_pass = False
         key: value
 ```
 
+### Includes and Imports
+- Includes are dynamic and used for conditionally including something.
+- While, Imports are static and decided when ansible pre-processes the file.
+
 ### Best Practices
 - Use variables to separate site-specific playbooks.
 - Make your playbook such that it will be mostly common for all the sites.
@@ -59,6 +64,12 @@ become_ask_pass = False
 - Use facts for site-specific work if needed.
 - Decouple site-specific and generic tasks.
 - Use list for installing packages instead of single package per task.
+- Security:
+    - do not do password-less ssh keys
+    - do not set `become = true` at top level
+    - use `-b -K` if necessary but not convenient
+    - use ssh key with password and use ssh-agent for convenience and use ssh-add to add key
+    - do not use NOPASSWD /etc/sudoers, use timestamp to increase timeout of sudo
 
 ### Variables
 - Variables can be user-defined or ansible gathered facts.
@@ -207,7 +218,7 @@ e.g.
       loop: "{{ myvar }}"
 ```
 
-## Failure Handling
+### Failure Handling
 - `ignore_errors:` can be used to ignore failed tasks. It can be defined at task or play level.
 - `force_handlers:` can also be used to run handler even when other tasks do fail.
 - `fail` module can be used to inform why a task has failed
@@ -232,11 +243,25 @@ e.g.
       fail:
         msg: task failed
 ```
-## Ansible vault
-- Store secure data using encryption.
-- Can be used using `ansible-vault` command
 
-## Ansible collections
+### Tags
+- Tags can be specified using `tags:`
+- `--list-tags` will list all tags.
+- `-t <tags_names>` will run tasks or plays with only that tasks.
+- `--skip-tags <tags_names>` will run all tasks without the tags specified.
+
+### Delegation
+- We can use `delegate_to:` to change task to run on specific host.
+- Requirements for delegation to work on specified host:
+    - host must have python installed
+    - SSH access to managed hosts is enabled
+    - Hostname to ip address resolution working (either using dns or /etc/hosts)
+    - host must exist in inventory
+- e.g.
+    - It can be used to verify something from `localhost` by adding task to verify and delegate that to `localhost`.
+    - Copy/Sync files between managed hosts.
+
+### Ansible collections
 - New way to bundle ansible contents
 - Collections may contains:
     - modules
@@ -248,13 +273,20 @@ e.g.
 - In ansible version 2.9 the collections need to be installed before hand.
 We can specify required collections in `requirements.yml`.
 
-## Ansible roles
+### Ansible roles
 - Community provided standard solution for common tasks like setting up docker.
 - They are on ansible galaxy.
 - We can also create roles yourself.
 - Tasks in roles are executed before tasks.
 - We can change that behavior with `pre_tasks:` flag.
 - We need to install a role using command `ansible-galaxy role install <role_name>`
+- To create a role:
+    - Use `ansible-galaxy roles init <role_name>`
+    - This command creates required directory structure.
+
+## Ansible vault
+- Store secure data using encryption.
+- Can be used using `ansible-vault` command
 
 # Ansible Galaxy
 - `ansible-galaxy` command can be used to manage roles and collection from [Ansible Galaxy](https://galaxy.ansible.com).
