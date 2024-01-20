@@ -52,7 +52,7 @@ and dependencies.
     println!("The numbers in reverse order are: {3} {2} {1} {0}", 8, 2, 3, 4);
     println!("Printing Array: {:?}", [1, 2, 3, 4, 5]);
     ```
-- If we have a variable at end of function and without semi-colons at the end it will be returned.
+- If we have a variable at end of function without semi-colons then it will be returned.
     ```rust
     fn auto_return() -> i32 {
         let a = 11;
@@ -163,7 +163,7 @@ and dependencies.
             );
         }
         ```
-    Output:
+    - Output
         ```
         Floating point numbers: float1: 1.2233 float2: 122.33
         Floating point numbers precision upto 2 decimal: float1: 1.22 float2: 122.33
@@ -410,6 +410,12 @@ and dependencies.
     }
     ```
 
+- `String`
+    - `String` type is actually struct.
+    - So `String`s can be mutated if defined so unlike other programming languages.
+    - It implements `Drop` trait. It has `drop()` method which is called when
+    `String` goes out of scope.
+
 ### Flow control
 #### Branching statements
 - `if/else if/else`
@@ -425,6 +431,21 @@ and dependencies.
         }
     }
     ```
+    - We can also return values from `if/else` statements. But we have to make sure  
+    value is returned in every case.  
+    e.g.
+        ```rust
+        fn main() {
+            let a: String;
+            let b = 100;
+            a = if b == 100 {
+                String::from("value")
+            } else {
+                String::from("none")
+            };
+            println!("{}", a)
+        }
+        ```
 - `match`
     - similar to switch
     - match on
