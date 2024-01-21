@@ -108,6 +108,97 @@ implements `Copy` trait.
         }
 
         ```
+### Lifetimes
+- Lifetime of variable is time when it was allocated till it was deallocated (deleted) from memory.
+#### Lifetime Annotations
+- Lifetime Annotations are used to specify lifetime of a references and variables at compile-time.
+- If structs and tuples have references as fields or elements you **MUST** specify the lifetime annotations
+so that it will be clear when lifetime of the references inside a structs might end.
+- Lifetime Annotations are declared using `'lifetime_annotation_name` (called tick).
+- They are passed around to functions, structs and tuples as `<'lifetime_annotation_name'>`.  
+e.g.`fn function_name<'lifetime_annotation_name>`,  
+`struct Struct_name <'lifetime_annotation_name>`.
+    ```rust
+    fn main() {
+        let numbers = vec![2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24];
+
+        let sum_of_nums = sum(&numbers);
+        let product_of_nums = product(&numbers);
+        let average_of_nums = average(&numbers);
+
+        println!("Sum of these numbers: {}", sum_of_nums);
+        println!("Product of these numbers: {}", product_of_nums);
+        println!("Average of these numbers: {}", average_of_nums);
+
+        let other_numbers = vec![1, 2, 3, 4, 5, 6];
+        let (slice1, slice2) = first_three(&numbers, &other_numbers);
+
+        println!("The first three elements in `slice1` are:");
+
+        for num in slice1 {
+            println!("• {}", num);
+        }
+
+        println!("The first three elements in `slice2` are:");
+
+        for num in slice2 {
+            println!("• {}", num);
+        }
+    }
+
+    fn sum(numbers: &[i64]) -> i64 {
+        let mut total = 0;
+
+        for num in numbers.iter() {
+            total += num;
+        }
+
+        total
+    }
+
+    fn product(numbers: &[i64]) -> i64 {
+        let mut total = 1;
+
+        for num in numbers.iter() {
+            total *= num;
+        }
+
+        total
+    }
+
+    fn average(numbers: &[i64]) -> i64 {
+        let length = numbers.len() as i64;
+
+        sum(numbers) / length
+    }
+
+    // here lifetime annotation / specifier is required because we are returning
+    // are reference and we need to know what will be it's lifetime.
+    fn first_three<'a>(numbers1: &'a [i64], numbers2: &'a [i64]) -> (&'a [i64], &'a [i64]) {
+        (&numbers1[0..3], &numbers2[0..3])
+    }
+
+    ```
+##### Lifetime Elision
+- Lifetime Elision can be used to let compiler handle lifetime annotations.
+- If there is need for specific annotation compiler will throw error otherwise let compiler
+handle it.
+- TODO: needs more information
+#### Static Lifetime
+- `'static` lifetime is for entire program.
+- Mostly used with `&str`.  
+    e.g.
+    ```rust
+    fn main() {
+        let name = "John";
+        // is similar to 
+        let name: &'static str = "John";
+        // is similar to 
+        let name: &str = "John";
+    }
+    ```
+- These are hard-coded in binary themselves.
+
 ### Function parameters and returns
 - All parameters are immutable i.e. `a` in following example is immutable till
 it is shadowed.  
