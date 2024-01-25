@@ -64,6 +64,83 @@
 - We can use `mod` keyword to create a module.
 - We can use `use` keyword to import modules and other types of data.
 - `pub` keyword can be used to make something public.
+- e.g.
+
+  - Suppose we have a module named `module` which we want to import. Then file
+    structure for it can be:
+
+  ```files
+  /
+  └── src
+      ├── module.rs
+      └── main.rs
+  ```
+
+  ```rust
+  // src/module.rs
+  pub enum Colors {
+      Red,
+      Yellow,
+      Blue,
+  }
+  ```
+
+  ```rust
+  // src/main.rs
+  mod module;
+
+  use module::Colors;
+
+  fn main() {
+      let color: Colors = Colors::Red;
+      match color {
+          Colors::Red => println!("red"),
+          Colors::Yellow => todo!(),
+          Colors::Blue => todo!(),
+      }
+  }
+  ```
+
+  OR
+
+  ```files
+  /
+  └── src
+      ├── module/
+      │   ├── mod.rs
+      │   └── colors.rs
+      └── main.rs
+  ```
+
+  ```rust
+  // src/module/mod.rs
+  pub mod colors;
+  ```
+
+  ```rust
+  // src/module/colors.rs
+  pub enum Colors {
+      Red,
+      Yellow,
+      Blue,
+  }
+  ```
+
+  ```rust
+  // src/main.rs
+  mod module;
+
+  use crate::module::colors::Colors;
+
+  fn main() {
+      let color: Colors = Colors::Red;
+      match color {
+          Colors::Red => println!("red"),
+          Colors::Yellow => todo!(),
+          Colors::Blue => todo!(),
+      }
+  }
+  ```
 
 ## Syntax
 
@@ -623,6 +700,7 @@ fn main() {
     };
 }
 `
+
 - We have to derive `PartialEq` trait to compare enums using `==`.
 - Enums are similar to `union` in C under the hood.
 
