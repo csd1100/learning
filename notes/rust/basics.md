@@ -57,6 +57,14 @@
   cargo check
   ```
 
+## Project Structure
+
+### Modules
+
+- We can use `mod` keyword to create a module.
+- We can use `use` keyword to import modules and other types of data.
+- `pub` keyword can be used to make something public.
+
 ## Syntax
 
 ### Basic Syntax
@@ -615,6 +623,8 @@ fn main() {
     };
 }
 `
+- We have to derive `PartialEq` trait to compare enums using `==`.
+- Enums are similar to `union` in C under the hood.
 
 ##### Commonly used enums
 
@@ -641,6 +651,30 @@ fn main() {
 - `Self` (with upper case `S`) is keyword that can be used as return type of
   method inside `impl`
   block.
+
+```rust
+enum Log {
+    TRACE(String),
+    DEBUG(String),
+    INFO(String),
+    WARN(String),
+    ERROR(String),
+}
+
+impl Log {
+    fn log(&self, msg: &str) {
+        match self {
+            Log::TRACE(level) => println!("{} - {}", level, msg),
+            _ => todo!()
+        }
+    }
+}
+
+fn main() {
+    let traceLogger = Log::TRACE(String::from("trace"));
+    traceLogger.log("hello world");
+}
+```
 
 ### Flow control
 

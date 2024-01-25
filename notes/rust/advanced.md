@@ -319,3 +319,62 @@ TODO: add more info
   But `.into_iter()` gets the ownership of the vector or array.
 - `.enumerate()` can be used to get tuples of `(<index>, <value>)`.
 - We can use `.skip(<number_of_times>)` to skip. TODO: Needs more information.
+
+### Traits
+
+- Traits are similar to interfaces in other languages.
+- `trait` keyword can be used to define trait.
+- We can use `impl <trait_name> for <type_name> {}` to implement the struct.
+- We must implement methods specified in trait.
+- We can also add default implementation for methods in traits.
+- We can also implement our own traits on basic types like `i32` or `f64`.
+- Simple trait example:
+
+  ```rust
+  pub struct Rectangle {
+      pub x: f64,
+      pub y: f64,
+      pub width: f64,
+      pub height: f64,
+  }
+
+  pub trait Area {
+    fn area(&self) -> f64;
+  }
+
+  impl Area for Rectangle {
+      fn area(&self) -> f64 {
+          return self.width * self.height;
+      }
+  }
+  ```
+
+- We can also import traits outside our project and implement them on our types.
+  e.g.
+
+  - `IntoIterator` trait: to create our own implementation of
+    iterator.
+  - `From` trait: which uses `into()` method to convert to types.
+  - `FromStr` trait: which uses `parse()` method to convert string to our type.
+  - `Display` trait: which uses `fmt()` method to create a string representation.
+
+- Traits can also be created for Generic types.
+- We can use `where` keyword to limit the Generic traits to types implementing
+  specific trait. e.g.
+
+  ```rust
+  impl<T, V> Collidable<T> for V
+  where T: Points,
+        V: Contains
+  {
+      fn collide(&self, other: &T) -> bool {
+          for point in other.points() {
+              if self.contains_point(point) {
+                  return true;
+              }
+          }
+
+          return false;
+      }
+  }
+  ```
