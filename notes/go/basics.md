@@ -1,20 +1,26 @@
 # Go Basics
+
 - `_` can be used for unused variables.
 - go prefers tabs over spaces. [docs](https://go.dev/doc/effective_go#formatting)
+
 ## Module
+
 - A module is group of packages.
+
 ## Packages
+
 - `main` package is where execution starts. ( and in `main` function. )
 - Each go file must have `package <name>` declaration at top.
 - Single directory can have only **one** package.
 - All the files with same package should be in same directory.
 - Everything in package scope is available for entire package. i.e.
-Each file in package shares everything without need to import the file.
+  Each file in package shares everything without need to import the file.
 - Package name and file / directory name may or may not to be same.
 - Anything in package starting with Capital letter (TitleCase) is automatically exported.
 - camelCase variables are private to package.
 - Exported values should have comment above similar to JavaDoc or JSDoc.
 - e.g.
+
 ```go
 package utils
 
@@ -34,18 +40,24 @@ type User struct{ // User struct is exported
 	name string // name is not exported
 }
 ```
+
 - Imports are per file though not package level.
-- You can import packages with `import` keyword. `import` starts with module name then internal path in repo.
+- You can import packages with `import` keyword. `import` starts with module name
+  then internal path in repo.
 - To import the package we have to give directory path to `import` declaration,
-but to access exported values we need to use package name which might not be similar to directory.
+  but to access exported values we need to use package name which might not be
+  similar to directory.
 - e.g. In following example the `not_tmp` package is in `tmp` directory.
-So we `import` directory ` module/tmp`. But to access actual package we need to use package name i.e. `not_tmp`.
+  So we `import` directory `module/tmp`. But to access actual package we need
+  to use package name i.e. `not_tmp`.
+
 ```go
 // path: ./tmp/package-file.go
 package not_tmp
 
 const Test = 1
 ```
+
 ```go
 // path: ./main.go
 package main
@@ -56,14 +68,19 @@ func main() {
 	print(not_tmp.Test) // need to use package name `not_tmp`
 }
 ```
+
 ## Types, Variables and Constants
+
 - Declaration - `var <identifier> <datatype> = <value>`
 - Declaration - `const <identifier> <string|bool|int> = value`
-- Constants can only be of type `string`, `bool`, or `int`. They **must** have value at the time of declaration.
+- Constants can only be of type `string`, `bool`, or `int`. They **must** have
+  value at the time of declaration.
 - Strings always in double quotes.
 - Conversions - `<datatype>(another_value)` will type cast another_value to `type`
-- There is a special `:=` operator that can be used to drop both use of `var` keyword and type definition.
-The datatype will be inferred. Doesn't work outside functions.
+- There is a special `:=` operator that can be used to drop both use of `var`
+  keyword and type definition.
+  The datatype will be inferred. Doesn't work outside functions.
+
 ```go
 const t bool = true
 // all 3 are equivalent
@@ -71,22 +88,29 @@ var a string = "Hello"
 var b = "Hello"
 b := "Hello"
 ```
+
 ## Conditionals
+
 - `if`/`else if`/`else` are supported. Parenthesis are not required around condition.
-- `if` block can execute code as well and variables defined in that will be scoped in `if`/`else`.
-- The condition should be last in execution though. Like in below example condition is last `err != nil`.
+- `if` block can execute code as well and variables defined in that will be
+  scoped in `if`/`else`.
+- The condition should be last in execution though. Like in below example
+  condition is last `err != nil`.
 - e.g.
+
 ```go
 if err := someFunc(); err != nil {
 	// err is scoped here
 }
 ```
+
 - `switch` is kind of similar to other C style languages. But,
-    - Does not have `break`.
-    - To go to next cases `fallthrough` can be used.
-    - Has logical OR possible in `case`.
-    - The predicate itself can be removed and cases can have boolean evaluation.
+  - Does not have `break`.
+  - To go to next cases `fallthrough` can be used.
+  - Has logical OR possible in `case`.
+  - The predicate itself can be removed and cases can have boolean evaluation.
 - e.g.
+
 ```go
 switch {
 	case a == 9:
@@ -99,10 +123,14 @@ switch {
 	default:
 }
 ```
+
 ## Loops
-- only `for` loop is available not `while`. `for` can be executed similar to while though.
+
+- only `for` loop is available not `while`. `for` can be executed similar to
+  while though.
 - As java or c++ it does not strict condition of 2 `;`. So it can be used as while.
 - e.g.
+
 ```go
 // while imitation
 i := 0
@@ -110,8 +138,11 @@ for i < 100 {
 	i += 1
 }
 ```
-- `range` keyword can be used to iterate over things. For strings though `range` will need typecasting characters to string.
+
+- `range` keyword can be used to iterate over things. For strings though `range`
+  will need typecasting characters to string.
 - e.g.
+
 ```go
 var sentence = "Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat."
 for index, letterNum := range sentence {
@@ -120,22 +151,27 @@ for index, letterNum := range sentence {
 	}
 }
 ```
+
 ## Functions
+
 - Declared with `func` keyword. Parameters in parenthesis.
-The datatype of parameters is specified after parameter separated by space.
-After parenthesis specifies the return datatype.
+  The datatype of parameters is specified after parameter separated by space.
+  After parenthesis specifies the return datatype.
 - Can also return more than 1 values. Greatly used for error handling.
 - e.g.
+
 ```go
 // func identifier(param1 datatype, param2 datatype) return_type {}
 func someFunc(data int) (int, int) {
 	return 0, 1
 }
 ```
+
 - Return values can also have identifier. i.e. We can specify identifiers we want
-to use in functions for values to be returned.
-This can be used to remove specifying what should be returned with `return`.
+  to use in functions for values to be returned.
+  This can be used to remove specifying what should be returned with `return`.
 - e.g.
+
 ```go
 // returns 0,1
 func someFunc(data int) (a int, b int) {
@@ -144,18 +180,25 @@ func someFunc(data int) (a int, b int) {
 	return
 }
 ```
+
 - `...` can be used to pass in variable arguments.
 - e.g. `ages` in below code block is list of `int`s.
+
 ```go
 func someFunc(ages ...int) {
 	// ....
 }
 ```
+
 ### Closures
+
 - Go also supports closures but closure values are actually reference.
 - So if actual value changes before execution the closure will also get updated value.
-- e.g. The program will print `3` three times because at the time of execution of `printInt(i)` in goroutines,
-`i` is 3 because `i` is closure variable and will have reference to outer scope `i` whose value is already 3.
+- e.g. The program will print `3` three times because at the time of execution
+  of `printInt(i)` in goroutines,
+  `i` is 3 because `i` is closure variable and will have reference to outer
+  scope `i` whose value is already 3.
+
 ```go
 // Don't do this
 package main
@@ -181,13 +224,19 @@ func main() {
 	wg.Wait()
 }
 ```
+
 ### `init()` function
-- There is a special function named `init()` which can be used to initialize the data.
+
+- There is a special function named `init()` which can be used to initialize the
+  data.
 - This is executed before execution of `main`.
 - There can be multiple `init()` function definition in a same package.
 - Multiple `init()` can be used to modularize initialization of data.
-- The `init()` functions are executed in the order of definition. And for package `init()` whenever the package file is used in code before using that part `init()` is executed.
+- The `init()` functions are executed in the order of definition. And for package
+  `init()` whenever the package file is used in code before using that part `init()`
+  is executed.
 - e.g. `init()` is invoked before `main`.
+
 ```go
 package main
 
@@ -200,10 +249,16 @@ func main() {
 }
 
 ```
+
 ### `defer` keyword
-- `defer` keyword can defer the invocation of the functions till *before* the `return` or the completion of function.
+
+- `defer` keyword can defer the invocation of the functions till _before_ the
+  `return` or the completion of function.
 - `defer` calls can be used for cleanup for `panic`s.
-- e.g. Will print in sequence in comments. The first `defer` will be done last because it was added before. It is similar to stack. We are stacking defer calls so last in is first out.
+- e.g. Will print in sequence in comments. The first `defer` will be done last
+  because it was added before. It is similar to stack. We are stacking defer calls
+  so last in is first out.
+
 ```go
 functions test() int {
 	defer fmt.Println("defer") // 6
@@ -215,23 +270,36 @@ functions test() int {
 	return 1
 }
 ```
+
 ## Arrays
+
 - Declaration - `var identifier [<len>]<datatype>`
 - e.g.
+
 ```go
 scores := [5]int{1,2,3,4,5}
 // inferred length of 4 when using `...`
 scores := [...]int{1,2,3,4}
 
 ```
+
 ## Slices
-- Slices can be slices of arrays. They are also dynamic in length. We can use `make` keyword to initialize the slice.
+
+- Slices can be slices of arrays. They are also dynamic in length. We can use
+  `make` keyword to initialize the slice.
 - Slices can defined as `var mySlice []<datatype> = make([]<datatype>, <size>, <cap>)`
-- Where it will initialize `mySlice` with size of `size` with default values and `cap` will be maximum allocated size for the slice. `cap` is optional.
-- `append()` can be used to add to slice. It returns new slice it does not mutate the original slice.
-If we append more than `cap` of the slice then `cap` will be increased two-fold. i.e. If `cap` of slice is 4 and we append 5 elements to it then the new `cap` will be 8.
-- Now if we append over cap by twice i.e. cap of `sliceOfArray` is 4, and if we create a new slice with element more than cap*2 i.e. more than 8 then it will increase cap by len+1.
+- Where it will initialize `mySlice` with size of `size` with default values and
+  `cap` will be maximum allocated size for the slice. `cap` is optional.
+- `append()` can be used to add to slice. It returns new slice it does not mutate
+  the original slice.
+  If we append more than `cap` of the slice then `cap` will be increased two-fold.
+  i.e. If `cap` of slice is 4 and we append 5 elements to it then the new `cap`
+  will be 8.
+- Now if we append over cap by twice i.e. cap of `sliceOfArray` is 4, and if we
+  create a new slice with element more than cap\*2 i.e. more than 8 then it will
+  increase cap by len+1.
 - e.g.
+
 ```go
 var arr [5]int = [5]int{1,2,3,4,5}
 var sliceOfArray = arr[1:3]
@@ -249,13 +317,18 @@ fmt.Println(len(newSlice2)) // will print `9` because slice is of size 9
 fmt.Println(cap(newSlice2)) // will print `10` because the first increase will be twice
 // for new slice 4->8 then onwards then cap will be len+1
 ```
+
 ## Maps
+
 - Maps can be similar to dictionaries with key value pair.
 - They can be declared as `var map1 map[<key_type>]<value_type>`.
 - For maps as well we can initialize it with `make`.
-- We can access values using keys like `map[key]`. It returns 2 values 1 -> value, 2 -> ok(boolean) if value is present.
-- `delete` can be used to delete values in map. We cannot set value to `nil` delete the values.
+- We can access values using keys like `map[key]`. It returns 2 values 1 -> value,
+  2 -> ok(boolean) if value is present.
+- `delete` can be used to delete values in map. We cannot set value to `nil`
+  delete the values.
 - e.g. Here key can be only of datatype `int` and value of `string`.
+
 ```go
 var map1 map[int]string = make(map[int]string)
 map1[1]="sss"
@@ -269,12 +342,17 @@ map2 := map[int]string{
 val1, status := map2[4] // returns nothing, false
 delete(map2, 2) // will delete "abs"
 ```
+
 ## Custom types and Aliases
+
 ### Aliases
+
 - Aliases are just alias/name for existing type. Similar to creating link to type.
-- Values created with alias can be used with original type directly without need for casting.
+- Values created with alias can be used with original type directly without need
+  for casting.
 - **Syntax** - `type <newName> = <type>`
 - e.g.
+
 ```go
 package main
 
@@ -288,15 +366,18 @@ func main() {
 	print(c)
 }
 ```
+
 ### Custom Types
+
 - Custom Types are types created using existing types.
 - They can be used to add semantic meaning to code.
 - We cannot perform operations between custom types and original types from
-they are created without typecasting.
+  they are created without typecasting.
 - Can be used for creating functions with more semantic meaning.
 - Can be used to add methods with semantic meaning on existing types.
 - **Syntax** - `type <new_type_name> <existing_type>`
 - e.g.
+
 ```go
 package main
 // type
@@ -310,14 +391,18 @@ func main() {
 	print(c)
 }
 ```
+
 ### Methods
+
 - A way to add functions specific to types.
 - Can be only added on local types.
 - e.g. It can be used to create `toString()` method for `map` or `struct`.
-- `String()` method is default method like `toString()` for Java.
-<br>***NOTE***: `println()`(all other print methods) method do not use `String()` only `fmt.Println()`(all fmt functions) does.
+- `String()` method is default method like `toString()` for Java.  
+   **_NOTE_**: `println()`(all other print methods) method do not use `String()`
+  only `fmt.Println()`(all fmt functions) does.
 - **Syntax** - `func (valOfType <type_for_which_method>) methodName([param1 <any_type>]) <return_type> {}`
 - e.g.
+
 ```go
 package main
 
@@ -349,7 +434,9 @@ func main() {
 	fmt.Println(c.toMeter()) // will automatically use `String()`
 }
 ```
+
 ### Structures
+
 - Like C or C++ structs i.e. group of values.
 - Example of complex and user-defined datatypes.
 - Can be defined as `type <Name> struct {//...}`
@@ -357,6 +444,7 @@ func main() {
 - It can have other struct values inside as well.
 - Last value in struct when assignment should also have `,` appended.
 - e.g.
+
 ```go
 package main
 type User struct {
@@ -373,15 +461,21 @@ func main() {
 	fmt.Println(reflect.TypeOf(u)) // prints main.User where `main` is package name
 }
 ```
+
 #### Embedding
+
 - Embedding type is similar to JavaScript's inheritance using prototypes.
 - It's not like OOP inheritance. In the end they are different types altogether.
-- For implementing *'embedding of a type*' just add a type in struct definition without identifier.
-- The only problem is that we cannot directly add properties for embedded type in constructor.
+- For implementing _'embedding of a type_' just add a type in struct definition
+  without identifier.
+- The only problem is that we cannot directly add properties for embedded type
+  in constructor.
 - Methods are also embedded.
 - There can be problem with name collision with multiple embeddings.
-- We can override methods in embedded type. But we can also use base methods as is if not defined in embedded.
+- We can override methods in embedded type. But we can also use base methods as
+  is if not defined in embedded.
 - e.g.
+
 ```go
 type User struct {
 	Id int
@@ -412,7 +506,9 @@ func newPaidUser(id int, name string, balance float64) PaidUser {
 	return p
 }
 ```
+
 - e.g.2.
+
 ```go
 package main
 
@@ -460,16 +556,139 @@ func main() {
 	E.PrintsHello() // prints "Hello Embedded"
 }
 ```
+
+- The base methods will be called only with embedded data not entire struct.
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+type Executable interface {
+	Exec(args string) error
+}
+
+func IsExecutable(exe Executable) {
+	fmt.Printf("\n%+v is Executable\n", exe)
+}
+
+type Base struct {
+	Command string
+}
+
+func (base Base) Exec(args string) error {
+	fmt.Printf("\nExecuting %+v\n", base)
+	fmt.Println("args ", args)
+	return nil
+}
+
+type Sub struct {
+	sub string
+	Base
+}
+
+func (sub Sub) Exec(args string) error {
+	fmt.Printf("\nExecuting sub %+v\n", sub)
+	fmt.Println("args ", args)
+	return nil
+}
+
+func (sub Sub) Test(args string) error {
+	fmt.Printf("\nsub Test\n%+v\n", sub)
+	fmt.Println(args)
+	return sub.Exec(args)
+}
+
+type Subber struct {
+	subber string
+	Sub
+}
+
+func (subber Subber) Exec(args string) error {
+	return fmt.Errorf("some error")
+}
+
+func main() {
+	base := Base{Command: "base"}
+	IsExecutable(base)
+	err := base.Exec("base")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	sub := Sub{
+		sub: "sub",
+		Base: Base{
+			Command: "sub",
+		},
+	}
+
+	IsExecutable(sub)
+	err = sub.Test("sub")
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	subber := Subber{
+		subber: "subber",
+		Sub: Sub{
+			sub:  "subber",
+			Base: Base{Command: "subber"},
+		},
+	}
+
+	IsExecutable(subber)
+	err = subber.Test("subber")
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+```
+
+The Output of this will be
+
+```stdout
+{Command:base} is Executable
+
+Executing {Command:base}
+args  base
+
+{sub:sub Base:{Command:sub}} is Executable
+
+sub Test
+{sub:sub Base:{Command:sub}}
+sub
+
+Executing sub {sub:sub Base:{Command:sub}}
+args  sub
+
+{subber:subber Sub:{sub:subber Base:{Command:subber}}} is Executable
+
+sub Test
+{sub:subber Base:{Command:subber}}
+subber
+
+Executing sub {sub:subber Base:{Command:subber}}
+args  subber
+```
+
+In above output we can see for `subber.Test` only embedded `Sub` is passed.
+
 ### Interfaces
+
 - List of of method signatures.
 - Emulation of Polymorphism.
-- If **ALL** method signatures in interface are implemented by `struct` or the type then
-it automatically (implicitly) implements the interface.
+- If **ALL** method signatures in interface are implemented by `struct` or the
+  type then it automatically (implicitly) implements the interface.
 - i.e. We don't need to use any keyword.
 - **Syntax** - `type <name> interface{ //... method signatures }`
-- Using empty interface (without any methods so every type is considered to implement it) we can create slices of any type.
+- Using empty interface (without any methods so every type is considered to
+  implement it) we can create slices of any type.
 - We can cast value in interface by `value.(<type>)`
 - e.g.
+
 ```go
 package main
 
@@ -538,13 +757,16 @@ func main() {
 ```
 
 ## Pointers
-- Pointers can be declared as `var ptr *<datatype>` where `ptr` will be pointer to value of type `<datatype>`.
+
+- Pointers can be declared as `var ptr *<datatype>` where `ptr` will be pointer
+  to value of type `<datatype>`.
 - `*<datatype>` is different type altogether i.e. pointer type.
 - As C and C++ go uses `*` for dereferencing, and `&` for address of variable.
 - We can use `:=` operator for pointers by assigning address i.e. `&identifier`
 - By default pointers have value of `nil`.
 - We cannot assign value directly to pointer variables.
 - e.g.
+
 ```go
 var x int = 1
 var intPtr *int = &x
@@ -562,12 +784,16 @@ fmt.Println("namePointer: ", namePointer) // prints address
 fmt.Println("TypeOf(namePointer): ", reflect.TypeOf(namePointer)) // prints *string
 fmt.Println("value: ", value) // abs
 ```
+
 ## Pass by Value / Pass by Reference
+
 - Go supports both Pass by Value (always) and Pass by Reference (pointer).
 - But it is always pass by value.
 - For Pass by Reference pass pointer to variable.
 - If we want to update `map` we will use Pass by Reference by using pointers.
-- For `struct` we do not need to use `*` and `&`. We can directly access properties of struct.
+- For `struct` we do not need to use `*` and `&`. We can directly access
+  properties of struct.
+
 ```go
 package utils
 
@@ -599,16 +825,22 @@ func main() {
 	fmt.Println(u) // prints {1 test2}
 }
 ```
+
 ## Error handling
+
 - Errors in go are values rather than exceptions.
 - There are 2 types
-    1. Error - Something bad happened but program doesn't stops.
-    2. Panic - `panic()` - Program stops, this is unrecoverable error. Happens at run-time.
+  1. Error - Something bad happened but program doesn't stops.
+  2. Panic - `panic()` - Program stops, this is unrecoverable error. Happens at run-time.
+
 ## GO-Routines
+
 - Multi-threading approach in go.
 - Go has main goroutine which runs `main.main()`.
-- If we add `go` keyword at the start of the function call it will spawn a new goroutine to execute the function.
+- If we add `go` keyword at the start of the function call it will spawn a new
+  goroutine to execute the function.
 - e.g.
+
 ```go
 package main
 
@@ -625,8 +857,11 @@ func main() {
 	prints5Times("bye")
 }
 ```
-- In main if we run each function call in goroutine then most probably nothing happens because main goroutine ends
-after spawning goroutines.
+
+- In main if we run each function call in goroutine then most probably nothing
+  happens because main goroutine ends
+  after spawning goroutines.
+
 ```go
 package main
 
@@ -644,19 +879,22 @@ func main() {
 	go prints5Times("bye")
 }
 ```
+
 ### Channels
+
 - Can be used for communication between multiple goroutines.
 - It is type of variable declared by using keyword `chan`
 - **Syntax** - `var <name> chan <type>`
 - A channel can be initialized with `make` function.
 - Value can be assigned to channel by using `<-` operator.
 - A goroutine can wait for value from channel also by using `<-` variable.
-Also we can access data passed through channel same way.
+  Also we can access data passed through channel same way.
 - We can use `close(chan)` method to close the channel.
 - In `make` we can also define how many values to wait for.
-e.g. `c := make(chan string, 2)` then we can setup waiting for `c` for 2 values across channel.
-If we do not send `2` values for `c` but add 2 listeners then program will `panic`.
+  e.g. `c := make(chan string, 2)` then we can setup waiting for `c` for 2 values across channel.
+  If we do not send `2` values for `c` but add 2 listeners then program will `panic`.
 - e.g.
+
 ```go
 package main
 
