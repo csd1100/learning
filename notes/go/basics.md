@@ -921,3 +921,141 @@ func main() {
 	}
 }
 ```
+
+- A channel sent to multiple goroutines will round-robin the sending of message.
+- e.g. in below example 1st 2 messages will go to id 3 but after that every message
+  is in round-robin manner. This behavior is noted when all 3 are available at
+  same time. Need to look into further why 1st 2 messages are for 3.
+- guess it's 3 because it was just started so was ready to receive the value.
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+)
+
+func main() {
+	fmt.Println("Hello World!")
+	ch := make(chan bool)
+	go print_from(1, ch)
+	go print_from(2, ch)
+	go print_from(3, ch)
+	for {
+		ch <- true
+		time.Sleep(5 * time.Second)
+	}
+}
+
+func print_from(id int, ch chan bool) {
+	for {
+		<-ch
+		fmt.Printf("[id: %+v]\n", id)
+	}
+}
+
+```
+
+```STDOUT
+Hello World!
+[id: 3]
+[id: 3]
+[id: 1]
+[id: 2]
+[id: 3]
+[id: 1]
+[id: 2]
+[id: 3]
+[id: 1]
+[id: 2]
+[id: 3]
+[id: 1]
+[id: 2]
+[id: 3]
+[id: 1]
+[id: 2]
+[id: 3]
+[id: 1]
+[id: 2]
+[id: 3]
+[id: 1]
+[id: 2]
+[id: 3]
+^Csignal: interrupt
+```
+
+- Whichever goroutine is ready to read will be preferred if multiple are not available.
+- e.g.
+
+```go
+package main
+
+import (
+	"fmt"
+	"math/rand"
+	"time"
+)
+
+func main() {
+	fmt.Println("Hello World!")
+	ch := make(chan bool)
+	go print_from(1, ch)
+	go print_from(3, ch)
+	go print_from(2, ch)
+	for {
+		ch <- true
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func print_from(id int, ch chan bool) {
+	for {
+		<-ch
+		rnd := rand.Intn(8)
+		fmt.Printf("\t[rnd: %+v]\n", rnd)
+		fmt.Printf("[id: %+v]\n", id)
+		time.Sleep(time.Duration(rnd) * time.Second)
+	}
+}
+```
+
+```stdout
+Hello World!
+[timenow: 2024-02-19 14:49:39.834147829 +0000 UTC]
+[id: 2]
+	[rnd: 4]
+[timenow: 2024-02-19 14:49:40.834255749 +0000 UTC]
+[id: 1]
+	[rnd: 0]
+[timenow: 2024-02-19 14:49:41.834639688 +0000 UTC]
+[id: 3]
+	[rnd: 1]
+[timenow: 2024-02-19 14:49:42.834718437 +0000 UTC]
+[id: 1]
+	[rnd: 6]
+[timenow: 2024-02-19 14:49:43.834789701 +0000 UTC]
+[id: 3]
+	[rnd: 2]
+[timenow: 2024-02-19 14:49:44.834833784 +0000 UTC]
+[id: 2]
+	[rnd: 7]
+[timenow: 2024-02-19 14:49:45.834896261 +0000 UTC]
+[id: 3]
+	[rnd: 1]
+[timenow: 2024-02-19 14:49:46.835257275 +0000 UTC]
+[id: 3]
+	[rnd: 2]
+[timenow: 2024-02-19 14:49:48.8351038 +0000 UTC]
+[id: 1]
+	[rnd: 6]
+[timenow: 2024-02-19 14:49:49.835367687 +0000 UTC]
+[id: 3]
+	[rnd: 2]
+[timenow: 2024-02-19 14:49:51.835108717 +0000 UTC]
+[id: 2]
+	[rnd: 5]
+[timenow: 2024-02-19 14:49:52.83525088 +0000 UTC]
+[id: 3]
+	[rnd: 1]
+```
