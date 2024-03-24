@@ -31,10 +31,12 @@
 - If merge base is at HEAD of the target branch the merge is done with Fast Forward
   strategy.
 - `git merge <source-branch>`
+- In merge we add commits from `source-branch` on top of `current-branch`.
+- So `HEAD` when we are doing conflict resolution will be `current-branch`.
 
 ## Rebase
 
-### NEVER REBASE on PUBLIC BRANCHES. i.e. never change public branch history
+### NOTE: NEVER REBASE ON PUBLIC BRANCHES BECAUSE IT CHANGES THE HISTORY
 
 - Rebase rewrites history
 - The basic steps of rebase is the following:
@@ -43,6 +45,33 @@
   1. checkout the latest commit on `<targetbranch>`
   1. play one commit at a time from `<currentbranch>`
   1. once finished will update `<currentbranch>` to the current commit sha
+- In rebase branch on which we are rebasing i.e. `targetbranch` is checked out first
+  and then git replays our `currentbranch`'s changes on top of it.
+- When we are resolving the conflict in the rebase, we are adding
+  `currentbranch`'s changes on top of `targetbranch`,
+  `HEAD` will be at `targetbranch` commit.
+- So when we have long-lived feature branches and there is a conflict in branches
+  every time we `rebase` we will need to resolve the same conflict again and again.
+- Because, `rebase` checks `targetbranch` out then plays `currentbranch`'s commits
+  one at a time. i.e. Every we `rebase`, git will checkout `main` then it will play
+  feature branch's commit. So conflict will occur every time, since we will apply
+  same commit on top of `main` every time we `rebase`.
+- The solution to above problem is `rerere`.
+
+### Interactive rebase
+
+- Interactive Rebase can be done using `-i` flag to `rebase` command.
+- This provides a way for us to choose what to do when replaying our commits.
+- The menu is provided to us in our editor with commented explanation on how it
+  can be used. And we update uncommented lines with what we want to do.
+- Squashing commits can be done by using interactive `rebase`
+
+## Rerere
+
+- Reuse recorded resolution
+- We can enable it in git config. `git config --add rerere.enabled true`
+- It has one caveat though, if we resolve conflict wrongly and that resolution
+  is recorded it will use that wrong resolution until we remove the recording.
 
 ## Reflog
 
