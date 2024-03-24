@@ -10,7 +10,7 @@
 ## Initial Setup
 
 - There are global and local configuration
-- Config keys are in format `<section>.<key>`
+- Configuration keys are in format `<section>.<key>`
 - `--global` makes config global
 - `user.email` and `user.name` are used in creating commits
 - To add local config use `git config --add <key> "<value>"`
