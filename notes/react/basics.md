@@ -105,6 +105,9 @@ const element2 = <div children={children}>Good Bye World!</div>;
 
 ```
 
+- `<React.Fragment>` | `<>`:
+    - can be used to add multiple direct children that are siblings
+
 #### Babel
 
 - Babel can compile script tag with `type="text/babel"` attribute.
