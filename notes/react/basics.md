@@ -16,6 +16,17 @@ element.
 eg. `id`, `textContent`, `className`.  
 NOTE: as `class` is JavaScript reserved keyword. It can be accessed by
 `element.className` property.
+- We can access style of element by using `style` object property. The subsequent css
+properties can be accessed using `camelCase` on `element.style`.
+Style that take measurements (`px`, `rem`) can be set using string or number.
+If number is specified default unit used is `px`;
+
+```js
+const element = document.getElementById('box');
+element.style.marginTop = "20px"; // eqvt to <div id="box" style="margin-top: 20px;"></div>
+element.style.marginTop = 30; // eqvt to <div id="box" style="margin-top: 30px;"></div>
+element.style.backgroundColor = "blue"; // eqvt to <div id="box" style="margin-top: 30px; background-color: blue;"></div>
+```
 
 ## React APIs
 
