@@ -29,6 +29,8 @@ element.style.backgroundColor = "blue"; // eqvt to <div id="box" style="margin-t
 ```
 
 - `role` attribute can be used to make application more accessible.
+- When DOM events are being fired like input or change, the `event.currentTarget`
+will give access to the DOM element that has caused the event to fire.
 
 ## React APIs
 
