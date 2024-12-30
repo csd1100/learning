@@ -28,6 +28,8 @@ element.style.marginTop = 30; // eqvt to <div id="box" style="margin-top: 30px;"
 element.style.backgroundColor = "blue"; // eqvt to <div id="box" style="margin-top: 30px; background-color: blue;"></div>
 ```
 
+- `role` attribute can be used to make application more accessible.
+
 ## React APIs
 
 - React has 2 libraries to be used with web. `react` and `react-dom`.
