@@ -90,7 +90,9 @@
 
 - `ref` prop on react component can be used to get access to DOM element.
   When a callback is passed to the `ref` prop, the first argument to callback will
-  be reference to the element.
+  be reference to the element. The value passed can be DOM element or `null`.
+  Some old versions of react call the `ref` callback again when dismounting
+  with `null`.
 - The callback to `ref` should return a cleanup function. So that we can do
   necessary cleanup when component is removed from DOM.
 

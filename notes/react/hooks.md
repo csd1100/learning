@@ -7,8 +7,8 @@
 - `useState` hook takes initial value as input and returns an array / tuple
   of reference to the state variable and setter for that variable.
 - React keeps track of all the state created using `useState`.
-- The reference to the variable is *immutable* and state can only be mutated by
-setter.
+- The reference to the variable is _immutable_ and state can only be mutated by
+  setter.
 - For `input` only bind the value to react state variable, when we want the value
   to be dynamically updated based on condition using `onChange`.
 
@@ -90,17 +90,163 @@ setter.
 - `useEffect` can cause memory leaks due not cleaning up, so remember to return
   cleanup function from `useEffect` callback.
 
+- **NOTE:** `useEffect` is triggered whenever dependencies passed to it changes.
+  The dependencies are checked not by value but reference if they are objects.
+  So even if object value does not change but object itself is reconstructed,
+  it will cause `useEffect` to be triggered even though we might not expect it.
+
+- e.g. In below example the dependencies of `useEffect` in `MyComponentWithProps`
+  component are `someStringProp` and `someNumberProp`.
+  There is `someState` from `App` that is not passed to `MyComponentWithProps`.
+- So we expect `useEffect` to be triggered only when `someNumberProp`, and
+  `someStringProp` is changed and not `someState`.
+- But `useEffect` is still triggered as dependency is not those 2 states but
+  passed in prop object `somePropDep`.
+- Whenever `someState` changes it will cause `App` to re-render as state has
+  changed. It will cause `<MyComponentWithProps>` to be re-rendered with new
+  `somePropDep` param object.
+- As object is newly constructed it will have same value but reference will be
+  different (i.e. `Object.is` will return `false`). So `useEffect` will be
+  triggered.
+
+  ```jsx
+  import { useEffect, useState } from "react";
+
+  function MyComponentWithProps(somePropDep: {
+    someStringProp: string,
+    someNumberProp: number,
+  }) {
+    useEffect(() => {
+      console.log("effect triggered");
+      return () => {
+        console.log("effect cleanup");
+      };
+    }, [somePropDep]);
+    return (
+      <div>
+        {somePropDep.someNumberProp} - {somePropDep.someStringProp}
+      </div>
+    );
+  }
+
+  export default function App() {
+    const [someStringProp, setSomeStringProp] = useState < string > "";
+    const [someNumberProp, setSomeNumberProp] = useState < number > 0;
+    const [someState, setSomeState] = useState < boolean > false;
+
+    return (
+      <div>
+        <input
+          type="text"
+          onChange={(evt) => setSomeStringProp(evt.currentTarget.value)}
+        />
+        <input
+          type="number"
+          onChange={(evt) => setSomeNumberProp(Number(evt.currentTarget.value))}
+        />
+        <button
+          onClick={() => {
+            setSomeState(!someState);
+          }}
+        >
+          {someState.toString()}
+        </button>
+        <MyComponentWithProps
+          someStringProp={someStringProp}
+          someNumberProp={someNumberProp}
+        />
+      </div>
+    );
+  }
+  ```
+
+  - To avoid this make `someStringProp` and `someNumberProp` as dependency as those
+    are not changing as they are states managed by react:
+
+  ```jsx
+  import { useEffect, useState } from "react";
+
+  function MyComponentWithProps({
+    someStringProp,
+    someNumberProp,
+  }: {
+    someStringProp: string,
+    someNumberProp: number,
+  }) {
+    useEffect(() => {
+      console.log("effect triggered");
+      return () => {
+        console.log("effect cleanup");
+      };
+    }, [someStringProp, someNumberProp]);
+    return (
+      <div>
+        {someNumberProp} - {someStringProp}
+      </div>
+    );
+  }
+
+  export default function App() {
+    const [someStringProp, setSomeStringProp] = useState < string > "";
+    const [someNumberProp, setSomeNumberProp] = useState < number > 0;
+    const [someState, setSomeState] = useState < boolean > false;
+
+    return (
+      <div>
+        <input
+          type="text"
+          onChange={(evt) => setSomeStringProp(evt.currentTarget.value)}
+        />
+        <input
+          type="number"
+          onChange={(evt) => setSomeNumberProp(Number(evt.currentTarget.value))}
+        />
+        <button
+          onClick={() => {
+            setSomeState(!someState);
+          }}
+        >
+          {someState.toString()}
+        </button>
+        <MyComponentWithProps
+          someStringProp={someStringProp}
+          someNumberProp={someNumberProp}
+        />
+      </div>
+    );
+  }
+  ```
+
 ## DOM Refs
 
 ### `useRef`
 
 - `useRef` is used to hold a javascript value that is not related to rendering.
 - `useRef` takes input parameter of initial value.
-- The value can be accessed and mutated using `<ref_obj>.current`.
+- The value can be accessed and directly mutated using `<ref_obj>.current`.
 - The mutation in `ref` won't cause re-render of the component.
 - The `ref`s should not be mutated during rendering. i.e. inside component. As
-mutation in `ref` won't cause re-render, if `ref` is mutated during component
-rendering, the rendered state will be inconsistent as value of `ref` has changed
-but it component is not rendered again with updated value.
+  mutation in `ref` won't cause re-render, if `ref` is mutated during component
+  rendering, the rendered state will be inconsistent as value of `ref` has changed
+  but it component is not rendered again with updated value.
 - It should be mutated in `useEffect` or callbacks that will be called by react
-after DOM is rendered like in case of event handling.
+  after DOM is rendered like in case of event handling.
+- `ref`s are generally used with DOM nodes.
+- As mentioned before mutation to a `ref` does not cause re-render, suppose if we
+  want to update DOM node but do not want to re-render entire application or component
+  we can use `useRef` to create the DOM node `ref` and mutate that in `useEffect`.
+- We can create a `useRef` of type `HTMLElement` with null initial value. Then,
+  We can access the DOM node by passing variable created by `useRef` to `ref` prop.
+  The DOM node will be assigned to `ref`. We can mutate that in `useEffect`.  
+  e.g.
+
+  ```jsx
+  function MyDiv() {
+    const myDivRef = useRef < HTMLDivElement > null;
+    useEffect(() => {
+      const myDiv = myDivRef.current;
+      console.log(myDiv);
+    }, []);
+    return <div ref={myDivRef}></div>;
+  }
+  ```
