@@ -250,3 +250,11 @@
     return <div ref={myDivRef}></div>;
   }
   ```
+
+## Unique IDs
+
+### `useId`
+
+- `useId` hook will generate a unique identifier that we can use for elements.
+- In `createRoot` we can pass `identifierPrefix` for `useId` to create IDs with
+  specified prefix.
