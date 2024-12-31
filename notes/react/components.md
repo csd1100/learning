@@ -45,38 +45,54 @@
 - Always compose props in such a way that component can be reusable.
   i.e. Use following way:
 
-      ```jsx
-      function Box({ size, ...props }: React.ComponentProps<'div'> & { size?: 'small' | 'medium' | 'large' }) {
-          const sizedClass = size ? 'box--' + size : '';
-          return (
-              <div
-                  {...props}
-                  // in below statement we are filtering falsy values in case props.className
-                  // is undefined and then joining with ' ' so we do not get `undefined` class
-                  // on element
-                  className={['box', props.className, sizedClass].filter(Boolean).join(' ')}
-                  style={{ fontStyle: 'italic', ...props.style }}
-              />
+  ```jsx
+  function Box({
+    size,
+    ...props
+  }: React.ComponentProps<"div"> & { size?: "small" | "medium" | "large" }) {
+    const sizedClass = size ? "box--" + size : "";
+    return (
+      <div
+        {...props}
+        // in below statement we are filtering falsy values in case props.className
+        // is undefined and then joining with ' ' so we do not get `undefined` class
+        // on element
+        className={["box", props.className, sizedClass]
+          .filter(Boolean)
+          .join(" ")}
+        style={{ fontStyle: "italic", ...props.style }}
+      />
+    );
+  }
+  ```
 
-          )
-      }
-      ```
+  Instead of
 
-      Instead of
+  ```jsx
+  function Box({
+    size,
+    ...props
+  }: React.ComponentProps<"div"> & { size?: "small" | "medium" | "large" }) {
+    return (
+      <div
+        className={size ? "box box--" + size : "box"}
+        style={{ fontStyle: "italic", ...props.style }}
+        {...props}
+      />
+    );
+  }
+  ```
 
-      ```jsx
-      function Box({ size, ...props }: React.ComponentProps<'div'> & { size?: 'small' | 'medium' | 'large' }) {
-          return (
-              <div className={size ? 'box box--' + size : 'box'} style={{ fontStyle: 'italic', ...props.style }} {...props} />
+  This is because the in 1st component I can add other classes just by adding
+  it to JSX element. In 2nd the class can only be `box` or `box box--${size}`.
+  And developer will have to update component every time something needs to be
+  changed.
 
-          )
-      }
-      ```
-
-      This is because the in 1st component I can add other classes just by adding
-      it to JSX element. In 2nd the class can only be `box` or `box box--${size}`.
-      And developer will have to update component every time something needs to be
-      changed.
+- `ref` prop on react component can be used to get access to DOM element.
+  When a callback is passed to the `ref` prop, the first argument to callback will
+  be reference to the element.
+- The callback to `ref` should return a cleanup function. So that we can do
+  necessary cleanup when component is removed from DOM.
 
 ## Error Handling
 

@@ -7,6 +7,8 @@
 - `useState` hook takes initial value as input and returns an array / tuple
   of reference to the state variable and setter for that variable.
 - React keeps track of all the state created using `useState`.
+- The reference to the variable is *immutable* and state can only be mutated by
+setter.
 - For `input` only bind the value to react state variable, when we want the value
   to be dynamically updated based on condition using `onChange`.
 
@@ -57,6 +59,15 @@
 - So instead of creating new state variable, we can just use normal javascript
   operation to update a normal javascript variable based on state variable.
 
+## Lifting State
+
+- The state can be moved only from parent component to child component.
+- So if sibling component needs access to state we can lift the state to their
+  common parent and pass the state variable and setter via props.
+- But after refactor or change in code it might happen that shared state is now
+  only needed for one component. In that case we should be take care of moving
+  the state back to required component otherwise code will become unmaintainable.
+
 ## Side Effects
 
 ### `useEffect`
@@ -78,3 +89,18 @@
   callback will be called on inconsistent dependency.
 - `useEffect` can cause memory leaks due not cleaning up, so remember to return
   cleanup function from `useEffect` callback.
+
+## DOM Refs
+
+### `useRef`
+
+- `useRef` is used to hold a javascript value that is not related to rendering.
+- `useRef` takes input parameter of initial value.
+- The value can be accessed and mutated using `<ref_obj>.current`.
+- The mutation in `ref` won't cause re-render of the component.
+- The `ref`s should not be mutated during rendering. i.e. inside component. As
+mutation in `ref` won't cause re-render, if `ref` is mutated during component
+rendering, the rendered state will be inconsistent as value of `ref` has changed
+but it component is not rendered again with updated value.
+- It should be mutated in `useEffect` or callbacks that will be called by react
+after DOM is rendered like in case of event handling.
