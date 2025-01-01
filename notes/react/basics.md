@@ -80,7 +80,7 @@ const element = React.createElement(
   },
   "Hello",
   " ",
-  "World"
+  "World",
 );
 ```
 
@@ -100,7 +100,7 @@ const element = React.createElement(
   {
     className: "container",
   },
-  "Hello World"
+  "Hello World",
 );
 ReactDom.createRoot(rootElement).render(element);
 ```
