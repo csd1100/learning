@@ -45,6 +45,10 @@
 
   As `someInitValueCalculator` will be called only once.
 
+- The Dispatch function (setter) can also take an callback function as input
+  rather than just the value. The callback receives old value as input. This can
+  be useful to avoid data inconsistency. For more information read `useReducer`.
+
 ### Derived State
 
 - We don't have to always create state for dynamic values using `useState`.
@@ -74,9 +78,52 @@
 - `useReducer` takes in 3 inputs:
   1.  `action` - a function that takes in _current state_ and _value passed to
       dispatcher_, and returning _new value_ that we want.
-  2.  initial value of the state
-  3.
+      It's better to have all the logic inside this function.
+  2.  initial value of the state **or** 3rd input is present then argument to
+      3rd input function
+  3.  A function to generate initial value i.e. lazy-initializer similar to `useState`
 - It returns tuple of reference and dispatch function (setter) similar to `useState`.
+  Dispatch function is generally named `dispatch`.
+- The Dispatch function (setter) can also take an callback function as input
+  rather than just the value. The callback receives old value as input.
+- Using callback function in setter / dispatch function is better to use when
+  state is changed based on old value.
+- When we pass an value to dispatcher due to async operations the value can be
+  out of syn so it's better to use callback.
+- e.g. Do **NOT** use following method, as `changeState` will be invoked with
+  value of state when `setTimeout` was invoked. If state was 0 when `setTimeout`
+  was called and user changed the state to 2 during that time, the `changeState`
+  will still be called with 0 even though new state value has changed.
+
+  - Also if we call `changeState` multiple times, say 3 times, it will still be
+    called with same value 3 times so state won't be increased by 3 but will be
+    updated to same value 3 times.
+
+  ```jsx
+  function reducerFn(oldState, change) {
+    return oldState + change;
+  }
+  const [state, changeState] = useReducer(reducerFn, "initialValue");
+  setTimeout(() => {
+    changeState(state + change);
+  }, 500);
+  ```
+
+  Instead do the following here, as react will pass updated value of state to
+  `oldState` in `changeState`:
+
+  ```jsx
+  function reducerFn(oldState, change) {
+    return oldState + change(); // here change is a callback function to be called
+  }
+  const [state, changeState] = useReducer(reducerFn, 0);
+  setTimeout(() => {
+    changeState((oldState) => oldState + 10);
+  }, 500);
+  ```
+
+  - `useReducer` is better than `useState` we want to handle state change properly.
+    Reducer function helps make state change easily manageable and debuggable.
 
 ## Side Effects
 
