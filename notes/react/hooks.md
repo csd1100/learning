@@ -48,6 +48,21 @@
 - The Dispatch function (setter) can also take an callback function as input
   rather than just the value. The callback receives old value as input. This can
   be useful to avoid data inconsistency. For more information read `useReducer`.
+- The react does not re-render component if state has not change even though
+  dispatch function was called. In case of objects though even if value is same
+  it might trigger re-render as new object will be passed to dispatch function.
+- In order to avoid this pass in callback that returns same thing if state has
+  not changed.
+
+  ```jsx
+  const [someState, setSomeState] = useState({ key: 0 });
+  setSomeState({ key: 0 }); //will cause re-render as new object is created
+  setSomeState((previousState) => {
+    key: previousState.key;
+  }); //will cause re-render as new object is returned by callback
+  setSomeState((previousState) => previousState); //will NOT cause re-render as
+  // same object is returned by callback
+  ```
 
 ### Derived State
 
