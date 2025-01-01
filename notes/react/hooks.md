@@ -59,7 +59,7 @@
 - So instead of creating new state variable, we can just use normal javascript
   operation to update a normal javascript variable based on state variable.
 
-## Lifting State
+### Lifting State
 
 - The state can be moved only from parent component to child component.
 - So if sibling component needs access to state we can lift the state to their
@@ -67,6 +67,16 @@
 - But after refactor or change in code it might happen that shared state is now
   only needed for one component. In that case we should be take care of moving
   the state back to required component otherwise code will become unmaintainable.
+
+### `useReducer`
+
+- `useReducer` can be used for state management.
+- `useReducer` takes in 3 inputs:
+  1.  `action` - a function that takes in _current state_ and _value passed to
+      dispatcher_, and returning _new value_ that we want.
+  2.  initial value of the state
+  3.
+- It returns tuple of reference and dispatch function (setter) similar to `useState`.
 
 ## Side Effects
 
