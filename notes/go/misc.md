@@ -1,6 +1,7 @@
 # Miscellaneous
 
 ## What can be nil -
+
 - Slices
 - Functions
 - Pointers

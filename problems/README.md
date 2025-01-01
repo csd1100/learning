@@ -1,6 +1,6 @@
 # Problems
 
-1. Patterns  
+1. Patterns
 2. Maths
    1. Odd - Even
    2. Prime
@@ -20,5 +20,3 @@
 9. Dynamic
 10. Algorithms
 11. Queues & Stacks
-
-

@@ -32,15 +32,15 @@
   have a default value and making their type definition include `undefined` using `?`  
   e.g.
 
-      ```jsx
-      function Greeting({ text = 'World' }: { text?: string }) {
-          return (
-              <h1>Hello, {text}!</h1>
-          );
-      }
-      const element2 = <Greeting />;
-      const element = <Greeting text="Name" />;
-      ```
+  ```jsx
+  function Greeting({ text = 'World' }: { text?: string }) {
+      return (
+          <h1>Hello, {text}!</h1>
+      );
+  }
+  const element2 = <Greeting />;
+  const element = <Greeting text="Name" />;
+  ```
 
 - Always compose props in such a way that component can be reusable.
   i.e. Use following way:

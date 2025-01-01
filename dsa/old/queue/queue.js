@@ -1,7 +1,6 @@
 // creating object for queue class
 var queue = new Queue();
 
-
 // Testing dequeue and pop on an empty queue
 // returns Underflow
 console.log(queue.dequeue());

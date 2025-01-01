@@ -62,6 +62,8 @@ element.style.backgroundColor = "blue"; // eqvt to <div id="box" style="margin-t
 - Signature: `React.createElement('<element_to_create>', { <attribute_keys>:<attribute_values> children: [<child_elements>] }, [children])`  
   NOTE: `<element_to_create>` denotes placeholder we do not need to add `<`, `>` to
   element name.
+- children can be element or the string (text node in DOM).
+
 
 - eg:
 
@@ -80,11 +82,9 @@ const element = React.createElement(
   },
   "Hello",
   " ",
-  "World"
+  "World",
 );
 ```
-
-- children can be element or the string (text node in DOM).
 
 ### ReactDom.createRoot
 
@@ -100,7 +100,7 @@ const element = React.createElement(
   {
     className: "container",
   },
-  "Hello World"
+  "Hello World",
 );
 ReactDom.createRoot(rootElement).render(element);
 ```
@@ -108,7 +108,7 @@ ReactDom.createRoot(rootElement).render(element);
 ### JSX
 
 - Browser does not know how to evaluate JSX so we need compiler like Babel.
-- In JSX we need to use `className` attribute|prop for class.
+- In JSX we need to use `className` prop for class.
 - Props are arguments to function components.
 - `{`, `}` are used for interpolation of JS in JSX.
 - Anything inside `{`, `}` is evaluated JS expression and result is inserted.
