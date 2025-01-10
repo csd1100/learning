@@ -15,15 +15,16 @@
 - The statements like function calls in the component are always executed when
   component is rendered. i.e. The same function calls are always made when component
   is rendered.
-- If we create a state in a component using `useState`. React will create a state
+- If we create a state in a component using `useState`, React will create a state
   variable with passed in initial value on first render. On next render react won't
-  create a new state variable but it will still execute the function component.
+  create a new state variable but it will still execute the expression in component
+  that creates the state i.e. `useState` statement.
 - Suppose initial value for state is being computed using a function.
   The initialization function will be called every time the component is rendered.
   If that function is expensive the UI will be slow.
-- So instead we can pass a reference to a function for `useState` to call when
-  computing initial value. This will make initialization function called only once.
-  This is called lazy-initialization.
+- So instead we can pass a reference of the initialization function for `useState`
+  to call when computing initial value. This will make initialization function
+  called only once. This is called lazy-initialization.
 - i.e. Do **not** do following:
 
   ```jsx
@@ -47,10 +48,11 @@
 
 - The Dispatch function (setter) can also take an callback function as input
   rather than just the value. The callback receives old value as input. This can
-  be useful to avoid data inconsistency. For more information read `useReducer`.
+  be useful to avoid data inconsistency.
 - The react does not re-render component if state has not change even though
-  dispatch function was called. In case of objects though even if value is same
-  it might trigger re-render as new object will be passed to dispatch function.
+  dispatch function was called. In case of objects though, even if value is same
+  it might trigger re-render as object reference might change (i.e. new object
+  with same value).
 - In order to avoid this pass in callback that returns same thing if state has
   not changed.
 
@@ -91,10 +93,10 @@
 
 - `useReducer` can be used for state management.
 - `useReducer` takes in 3 inputs:
-  1.  `action` - a function that takes in _current state_ and _value passed to
-      dispatcher_, and returning _new value_ that we want.
+  1.  a function that takes in _current state_ and _value passed to
+      dispatcher_ (called `action`), and returning _new value_ that we want.
       It's better to have all the logic inside this function.
-  2.  initial value of the state **or** 3rd input is present then argument to
+  2.  initial value of the state **or** if 3rd input is present then argument to
       3rd input function
   3.  A function to generate initial value i.e. lazy-initializer similar to `useState`
 - It returns tuple of reference and dispatch function (setter) similar to `useState`.
@@ -104,15 +106,8 @@
 - Using callback function in setter / dispatch function is better to use when
   state is changed based on old value.
 - When we pass an value to dispatcher due to async operations the value can be
-  out of syn so it's better to use callback.
-- e.g. Do **NOT** use following method, as `changeState` will be invoked with
-  value of state when `setTimeout` was invoked. If state was 0 when `setTimeout`
-  was called and user changed the state to 2 during that time, the `changeState`
-  will still be called with 0 even though new state value has changed.
-
-  - Also if we call `changeState` multiple times, say 3 times, it will still be
-    called with same value 3 times so state won't be increased by 3 but will be
-    updated to same value 3 times.
+  out of sync so it's better to use callback.
+- e.g. Do **NOT** update the state in the following manner:
 
   ```jsx
   function reducerFn(oldState, change) {
@@ -124,8 +119,17 @@
   }, 500);
   ```
 
-  Instead do the following here, as react will pass updated value of state to
-  `oldState` in `changeState`:
+  - The `changeState` will be invoked with value of state when `setTimeout` was
+    invoked. If state was 0 when `setTimeout` was called and user changed the state
+    to 2 during that time, the `changeState` will still be called with 0 even though
+    new state value has changed.
+
+  - Also if we call `changeState` multiple times, say 3 times, it will still be
+    called with same value 3 times so state won't be increased by 3 but will be
+    updated to same value 3 times.
+
+- Instead do the following here, as react will pass updated value of the state to
+  `changeState` as `oldState` param:
 
   ```jsx
   function reducerFn(oldState, change) {
@@ -137,8 +141,8 @@
   }, 500);
   ```
 
-  - `useReducer` is better than `useState` we want to handle state change properly.
-    Reducer function helps make state change easily manageable and debuggable.
+- `useReducer` is better than `useState` we want to handle state change properly.
+  Reducer function helps make state change easily manageable and debuggable.
 
 ## Side Effects
 
@@ -157,7 +161,7 @@
    If you need to do it think, before implementing it properly.
   If possible use well-known library that can do the things for you.
 - Put as much logic as you can in the `useEffect` callback rather than external
-  function as if you forget to input some dependency as argument to `useEffect` your
+  function. If you forget to add some dependency as argument to `useEffect` your
   callback will be called on inconsistent dependency.
 - `useEffect` can cause memory leaks due not cleaning up, so remember to return
   cleanup function from `useEffect` callback.

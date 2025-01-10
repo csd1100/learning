@@ -24,7 +24,7 @@
     <input name="photo" type="file" accept="image/*" />
   </div>
   ```
-- In `FormData`, checked checkbox input is stored as string `on` and if **not**
+- In `FormData`, a checked checkbox input is stored as string `on` and if **not**
   checked it just won't appear.
 - When `<label>` is associated with `<input>` either by `htmlFor` or being parent
   of that `<input>`, clicking on `<label>` will change focus to input field.
