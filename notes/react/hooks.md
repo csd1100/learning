@@ -334,3 +334,8 @@
 - `useId` hook will generate a unique identifier that we can use for elements.
 - In `createRoot` we can pass `identifierPrefix` for `useId` to create IDs with
   specified prefix.
+
+## Custom Hooks
+
+- Custom hooks are function that use builtin hooks.
+- They are generally named with `use<HookName>`.
