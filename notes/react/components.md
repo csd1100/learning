@@ -28,19 +28,19 @@
   const element = <lower_snake_case /> // React.createElement('lower_snake_case', null); // where `lower_snake_case` is a string
   ```
 
-- We can have default values for components by making properties of `props` param
-  have a default value and making their type definition include `undefined` using `?`  
+- We can have default props for components. It can be done by making properties 
+ of `props` param have a default value similar to default arg to function.
   e.g.
 
-      ```jsx
-      function Greeting({ text = 'World' }: { text?: string }) {
-          return (
-              <h1>Hello, {text}!</h1>
-          );
-      }
-      const element2 = <Greeting />;
-      const element = <Greeting text="Name" />;
-      ```
+  ```jsx
+  function Greeting({ text = 'World' }: { text?: string }) {
+      return (
+          <h1>Hello, {text}!</h1>
+      );
+  }
+  const element2 = <Greeting />;
+  const element = <Greeting text="Name" />;
+  ```
 
 - Always compose props in such a way that component can be reusable.
   i.e. Use following way:

@@ -19,12 +19,12 @@
 - `accept` attribute / prop on `<input>` can be used to limit the type of input.
   e.g. In below example the file input is limited to images using MIME type specified
   in `accept`.
-  `html
-    <div>
-        <input name="photo" type="file" accept="image/*">
-    </div>
-    `
-- In `FormData`, checked checkbox input is stored as string `on` and if **not**
+  ```html
+  <div>
+    <input name="photo" type="file" accept="image/*" />
+  </div>
+  ```
+- In `FormData`, a checked checkbox input is stored as string `on` and if **not**
   checked it just won't appear.
 - When `<label>` is associated with `<input>` either by `htmlFor` or being parent
   of that `<input>`, clicking on `<label>` will change focus to input field.

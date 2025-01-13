@@ -88,7 +88,7 @@ console.log("done");
 - In below example the 'start' and 'done' are still printed first then `data` 'xxx' is printed and at last `done testAwait`
 - The `testAwait` is psuedo-paused at `await` statement till promise resolves.
 
-```
+```javascript
 function promiseFunction() {
     return new Promise(resolve => {
         resolve('xxx')
