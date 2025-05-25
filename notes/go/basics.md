@@ -80,13 +80,16 @@ func main() {
 - There is a special `:=` operator that can be used to drop both use of `var`
   keyword and type definition.
   The datatype will be inferred. Doesn't work outside functions.
+- Each type has its own zero value like 0 , "", false.
+- Strings are stored in memory as 2 WORDS (a WORD is of size int on that specific platform). 
+  1st WORD contain address of 1st char of the string and 2nd Word stores length of the string.
 
 ```go
 const t bool = true
 // all 3 are equivalent
 var a string = "Hello"
 var b = "Hello"
-b := "Hello"
+c := "Hello"
 ```
 
 ## Conditionals
