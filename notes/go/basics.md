@@ -421,6 +421,7 @@ fmt.Println(cap(newSlice2)) // will print `10` because the first increase will b
 - When we create slice of slice when we edit newly created slice original is also
   modified. If we append to the newly created slice then it will affect
   the original slice if it has capacity. e.g.
+
   ```go
   func main() {
   	b := make([]int, 3, 5)
@@ -440,6 +441,42 @@ fmt.Println(cap(newSlice2)) // will print `10` because the first increase will b
   	fmt.Println(c)
   }
   ```
+
+  - `append()` call for slice might also cause memory leak or unexpected behavior.
+    If we have slice of objects, and we pass a reference to the one of the object
+    in the slice to a function, And then in different function we append
+    a value to a slice when length and the capacity of slice are same, `append`
+    will create a new slice with double size and copy over old values to new slice.
+    This will cause actual object being transferred to new memory location and
+    function will have invalid reference of old copy of object. So actual object
+    won't be updated at all.  
+    e.g. in following example we can see addres of `users[1]` is changed after
+    append.
+
+    ```go
+    type user struct {
+      name string
+    }
+
+    func handleUser(u *user) {
+      fmt.Printf("user: %v addr: %p\n", u, u)
+    }
+
+    func main() {
+      var users []user = make([]user, 3, 3)
+      users[0] = user{name: "one"}
+      users[1] = user{name: "two"}
+      users[2] = user{name: "three"}
+      fmt.Printf("user: %v addr: %p\n", users[1], &users[1])
+      handleUser(&users[1])
+      users = append(users, user{name: "four"})
+      fmt.Printf("user: %v addr: %p\n", users[1], &users[1])
+    }
+    // user: {two} addr: 0xc000014160
+    // user: &{two} addr: 0xc000014160
+    // user: {two} addr: 0xc00006a1f0
+
+    ```
 
 ### Arrays vs Slices
 
