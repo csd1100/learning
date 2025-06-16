@@ -81,11 +81,17 @@ func main() {
   keyword and type definition.
   The datatype will be inferred. Doesn't work outside functions.
 - Each type has its own zero value like 0 , "", false.
-- Strings are stored in memory as 2 WORDS (a WORD is of size int on that specific platform). 
+- Strings are stored in memory as 2 WORDS (a WORD is of size int on that specific platform).
   1st WORD contain address of 1st char of the string and 2nd Word stores length of the string.
 
 ```go
 const t bool = true
+const i = 100000 // number is of `kind` integer, here precision can be high so number can be very big
+// const i2 int8 = 10000 // number has `type` uint8 ,this will error as it has
+// type `uint8` so value is out of bounds
+const num = 12.1233 // here the precision of 256 bit, this is of `kind` floating
+const num2 float64 = 23.11 // here the precision is of 64 bit, this is of `type` float64
+// kinds have more precision than type
 // all 3 are equivalent
 var a string = "Hello"
 var b = "Hello"
@@ -154,6 +160,69 @@ for index, letterNum := range sentence {
 	}
 }
 ```
+
+### value and pointer semantics for `for..range`
+
+- There are two variants to for..range in terms of mutability and value, pointer
+  semantics.
+- Value semantic variant:
+
+  - here the values are copied when we are iterating over an array.
+  - i.e. whenever we perform any operation the original array is not affected.
+  - only values in scope of the loop are affected.
+  - e.g. in following example original array `numbers` will not have "number"
+    appended to its values.
+
+  ```go
+  func main() {
+    var numbers [3]string
+    numbers[0] = "one"
+    numbers[1] = "two"
+    numbers[2] = "three"
+    for i, number := range numbers {
+      number += " number"
+      fmt.Println(i, number)
+    }
+    fmt.Println(numbers)
+  }
+  ```
+
+- Pointer semantic variant:
+
+  - in this case original array can be edited if we use indexes to edit original
+    array rather than variable in array.
+  - e.g. here original array will be affected as we are directly editing original
+    values.
+
+  ```go
+  func main() {
+    var numbers [3]string
+    numbers[0] = "one"
+    numbers[1] = "two"
+    numbers[2] = "three"
+    for i := range numbers {
+      numbers[i] += " numbers"
+    }
+    fmt.Println(numbers)
+  }
+  ```
+
+  OR
+
+  ```go
+  func main() {
+    var numbers [3]string
+    numbers[0] = "one"
+    numbers[1] = "two"
+    numbers[2] = "three"
+    for i, number := range numbers {
+      // updating array not var number which is a copy of numbers[i]
+      numbers[i] += " numbers"
+      fmt.Println(i, number)
+    }
+    fmt.Println(numbers)
+  }
+  ```
 
 ## Functions
 
@@ -288,18 +357,46 @@ scores := [...]int{1,2,3,4}
 
 ## Slices
 
+- It is type that can be classified as reference type.
 - Slices can be slices of arrays. They are also dynamic in length. We can use
   `make` keyword to initialize the slice.
-- Slices can defined as `var mySlice []<datatype> = make([]<datatype>, <size>, <cap>)`
-- Where it will initialize `mySlice` with size of `size` with default values and
+- Slices can be also considered as similar to vectors of other languages.
+- They have similar syntax of array but the read and write is done similar to
+  pointer semantics. i.e. internal data structure is mutated and **not** a copy of the
+  data.
+- Slices have different empty and zero value.
+
+  - zero value of slice is 3 WORDS: nil, len: 0, cap: 0 , e.g.
+
+  ```go
+  var mySlice []string // zero value i.e. no internal array
+  ```
+
+  - the empty value of slice is again 3 WORDS: pointer to empty struct, len: 0, cap: 0.
+
+  ```go
+  var mySlice []string = []slice{} // empty value i.e. points to empty struct{}
+  ```
+
+- Slices can defined as `var mySlice []<datatype> = make([]<datatype>, <len>, <cap>)`
+- Where it will initialize `mySlice` with length of `len` with default values and
   `cap` will be maximum allocated size for the slice. `cap` is optional.
 - `append()` can be used to add to slice. It returns new slice it does not mutate
   the original slice.
-  If we append more than `cap` of the slice then `cap` will be increased two-fold.
+- as `append` returns a copy, always try to assign it back to same variable as it
+  will cause old reference cleaned up. Variable is referencing new copy, so old copy
+  will get GC'd. i.e. `data = append(data, value)` <- Here data is reassigned to new copy.
+- calling `append` on slice defined as `make([]int, 10, 10)` will cause appending value
+  at index **11** and **not 0** because we have already initialized slice with 10 zero values.  
+  To ensure append works as expected i.e. fill the slice do `make([]int, 0, 10.)`
+- When `len` and `cap` become equal, and elements are less than 1024, the `cap`
+  is increased by 100% (double).  
+  If elements are more than 1024 `cap` will increase by around 25%.
+- If we append more than `cap` of the slice then `cap` will be increased two-fold.
   i.e. If `cap` of slice is 4 and we append 5 elements to it then the new `cap`
   will be 8.
 - Now if we append over cap by twice i.e. cap of `sliceOfArray` is 4, and if we
-  create a new slice with element more than cap\*2 i.e. more than 8 then it will
+  create a new slice with element more than cap \* 2 i.e. more than 8 then it will
   increase cap by len+1.
 - e.g.
 
@@ -321,8 +418,78 @@ fmt.Println(cap(newSlice2)) // will print `10` because the first increase will b
 // for new slice 4->8 then onwards then cap will be len+1
 ```
 
+- When we create slice of slice when we edit newly created slice original is also
+  modified. If we append to the newly created slice then it will affect
+  the original slice if it has capacity. e.g.
+  ```go
+  func main() {
+  	b := make([]int, 3, 5)
+  	b[0] = 0
+  	b[1] = 1
+  	b[2] = 2
+  	// b - [0,1,2]
+  	// c := b[0:1]
+  	// c = append(c, 3) // b - 0 3 2; c - 0 3
+  	// c := b[1:2]
+  	// c = append(c, 4) // b - 0 1 4; c - 1 4
+  	c := b[0:2:2]
+  	c = append(c, 5) // as capacity was 2 and new (3rd) was added, a new copy was made
+  	// b - 0 1 2; c - 0 1 5
+  	c[0] = 100 // b - 0 1 2; c - 100 1 5
+  	fmt.Println(b)
+  	fmt.Println(c)
+  }
+  ```
+
+### Arrays vs Slices
+
+- arrays are of fixed length while slices are dynamic
+- arrays are stored as 2 WORDS, 1. Pointer to array and 2. Length of the array
+- slices are stored as 3 WORDS, 1. Pointer to the slice and 2. Length of the Slice 3. Capacity of the slice
+- Array is a builtin primitive type and Slice can be considered a reference type
+- When we pass an array using value semantics to a function a new copy of array is passed.
+- i.e. original array is not modified.
+- e.g.
+
+```go
+func updateOne(numbers [3]string) {
+	numbers[0] = "1"
+}
+
+func main() {
+	var numbers [3]string
+	numbers[0] = "one"
+	numbers[1] = "two"
+	numbers[2] = "three"
+	updateOne(numbers)
+	fmt.Println(numbers) // prints - one two three
+}
+```
+
+- When we pass a slice using value semantics to a function we can edit original
+  slice as same as reference being passed to a function so there is no need to
+  pass a pointer type to function i.e. do NOT pass `slice *[]string` but pass `slice []string`
+- i.e. original slice is modified
+
+```go
+func updateOne(numbers []string) {
+	numbers[0] = "1"
+}
+
+func main() {
+	var numbers []string = make([]string, 3)
+	numbers[0] = "one"
+	numbers[1] = "two"
+	numbers[2] = "three"
+	updateOne(numbers)
+	fmt.Println(numbers) // prints - 1 two three
+}
+```
+
 ## Maps
 
+- map is of reference type i.e. when we pass map value to a function original
+  is also modified.
 - Maps can be similar to dictionaries with key value pair.
 - They can be declared as `var map1 map[<key_type>]<value_type>`.
 - For maps as well we can initialize it with `make`.
