@@ -179,7 +179,7 @@ for index, letterNum := range sentence {
     numbers[0] = "one"
     numbers[1] = "two"
     numbers[2] = "three"
-    for i, number := range numbers {
+    for i, number := range numbers { // here copy of numbers is used for `number`
       number += " number"
       fmt.Println(i, number)
     }
@@ -222,6 +222,34 @@ for index, letterNum := range sentence {
     }
     fmt.Println(numbers)
   }
+  ```
+
+  ```go
+  func main() {
+    test := []string{"a", "b", "c", "d", "e"}
+    fmt.Printf("%p\n", &test)
+    // value semantics
+    for i, n := range test { // here copy of test is made when iterating using i, n
+      test = test[:2] // makes slice to only have 0, 1 (excluding 2)
+      // here we iterate over all indexes i.e. 0, 1, 2, 3, 4 and copy of slice where n is from copy
+      // so even when we make sliece to only have 0, 1 (excluding 2) `n` remains valid
+      fmt.Println(i, n) // this does NOT panic
+      // fmt.Println(test[i]) // this DOES panic as slice we are iterating over has changed
+      // where len becomes 2 i.e. only 0, 1 are present so test[2] is out of bounds
+      // so var `n` will remain valid "a", "b", "c", "d", "e", test[i] will fail
+    }
+    fmt.Println(test)
+    test = []string{"a", "b", "c", "d", "e"}
+    // pointer semantics due to index access
+    for i := range test {
+      // here we iterate over all indexes i.e. 0, 1, 2, 3, 4
+      test = test[:2]         // makes slice to only have 0, 1 (excluding 2)
+      fmt.Println(i, test[i]) // this DOES panic as slice we are iterating over has changed
+      // where len becomes 2 i.e. only 0, 1 are present so test[2] is out of bounds
+    }
+    fmt.Println(test)
+  }
+
   ```
 
 ## Functions
