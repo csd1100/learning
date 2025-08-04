@@ -117,6 +117,11 @@ Repo for DS, Algorithms and Problems from sites like Hackerrank and CodeChef
 
 - [Notes](./notes/system-design/system-design.md)
 
+## API Design
+
+- [Notes](./notes/api/api.md)
+- [Examples](./examples/api/)
+
 ## Cloud
 
 ### Docker
