@@ -122,6 +122,11 @@ Repo for DS, Algorithms and Problems from sites like Hackerrank and CodeChef
 - [Notes](./notes/api/api.md)
 - [Examples](./examples/api/)
 
+## Design Patterns
+
+- [Notes](./notes/design-patterns/design-patterns.md)
+- [Examples](./examples/design-patterns/)
+
 ## Cloud
 
 ### Docker
@@ -143,3 +148,4 @@ Repo for DS, Algorithms and Problems from sites like Hackerrank and CodeChef
 
 - [Notes](./notes/dsa/dsa.md)
 - [Examples](./examples/dsa/)
+
