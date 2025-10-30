@@ -335,6 +335,22 @@
 - In `createRoot` we can pass `identifierPrefix` for `useId` to create IDs with
   specified prefix.
 
+## Memoization
+
+### `useMemo`
+
+- `useMemo` can be used to memoize values.
+
+### `useCallback`
+
+- `useCallback` can be used to memoize callbacks, so we can always get same
+  callback function unless dependencies change.
+- Syntax: `memoizedCallback` will always return same instance `callback` unless
+  `dep1` changes.
+  ```jsx
+  const memoizedCallback = useCallback(callback, [dep1]);
+  ```
+
 ## Custom Hooks
 
 - Custom hooks are function that use builtin hooks.
